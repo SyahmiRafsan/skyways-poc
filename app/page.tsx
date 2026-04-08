@@ -1,19 +1,39 @@
-import { Button } from "@/components/ui/button"
+import type { Metadata } from "next"
 
-export default function Page() {
+import { Button } from "@/components/ui/button"
+import { logoutAction } from "@/features/auth/actions"
+import { getSessionFromCookieStore } from "@/features/auth/session"
+
+export const metadata: Metadata = {
+  title: "Home",
+}
+
+export default async function Page() {
+  const session = await getSessionFromCookieStore()
+
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-md min-w-0 flex-col gap-4 text-sm leading-loose">
-        <div>
-          <h1 className="font-medium">Project ready!</h1>
-          <p>You may now add components and start building.</p>
-          <p>We&apos;ve already added the button component for you.</p>
-          <Button className="mt-2">Button</Button>
+    <main className="flex min-h-svh p-6">
+      <div className="flex w-full max-w-md flex-col gap-4">
+        <h1 className="text-xl font-semibold">SkyCaplist</h1>
+        <p className="text-sm text-muted-foreground">Authenticated session details</p>
+        <div className="rounded-md border border-border p-4 text-sm leading-relaxed">
+          <p>
+            <span className="font-medium">Name:</span> {session?.name ?? "-"}
+          </p>
+          <p>
+            <span className="font-medium">Email:</span> {session?.email ?? "-"}
+          </p>
+          <p>
+            <span className="font-medium">Role:</span> {session?.role ?? "-"}
+          </p>
+          <p>
+            <span className="font-medium">ID:</span> {session?.id ?? "-"}
+          </p>
         </div>
-        <div className="font-mono text-xs text-muted-foreground">
-          (Press <kbd>d</kbd> to toggle dark mode)
-        </div>
+        <form action={logoutAction}>
+          <Button type="submit">Logout</Button>
+        </form>
       </div>
-    </div>
+    </main>
   )
 }

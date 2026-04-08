@@ -1,0 +1,20 @@
+[
+  {
+    "id": "U001",
+    "email": "user@skycaplist.test",
+    "name": "Demo User",
+    "role": "user"
+  },
+  {
+    "id": "T001",
+    "email": "tsm@skycaplist.test",
+    "name": "Demo TSM",
+    "role": "tsm"
+  },
+  {
+    "id": "Q001",
+    "email": "qam@skycaplist.test",
+    "name": "Demo QAM",
+    "role": "qam"
+  }
+]
