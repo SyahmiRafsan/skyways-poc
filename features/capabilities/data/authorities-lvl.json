@@ -1,0 +1,26 @@
+[
+  {
+    "authority": "EASA",
+    "issueNo": "01",
+    "revisionNo": "Rev. 25",
+    "revisionDate": "30 Jan 2025"
+  },
+  {
+    "authority": "JCAB",
+    "issueNo": "01",
+    "revisionNo": "Rev. 25",
+    "revisionDate": "30 Jan 2025"
+  },
+  {
+    "authority": "CAAM",
+    "issueNo": "01",
+    "revisionNo": "Rev. 25",
+    "revisionDate": "30 Jan 2025"
+  },
+  {
+    "authority": "FAA",
+    "issueNo": "01",
+    "revisionNo": "Rev. 25",
+    "revisionDate": "30 Jan 2025"
+  }
+]

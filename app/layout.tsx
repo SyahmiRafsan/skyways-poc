@@ -49,7 +49,7 @@ export default async function RootLayout({
     >
       <body>
         <ThemeProvider>
-          <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-col">
+          <div className="mx-auto flex min-h-svh w-full max-w-7xl flex-col">
             {session ? (
               <header className="flex items-center justify-between px-6 py-3">
                 <div className="flex items-center bg-[#051f44] p-3">

@@ -1,0 +1,50 @@
+[
+  {
+    "id": "cap-001",
+    "rating": "C16",
+    "ata": "61",
+    "category": "PROPELLERS",
+    "designation": "PROPELLER SPINNER",
+    "manufacturer": "HAMILTON SUNDSTRAND",
+    "aircraftModel": "ATR 42 DHC8-100",
+    "pnSeries": "790176",
+    "pn": "790176-1",
+    "maintenanceReference": "CMM 61-13-02",
+    "dkSgd": true,
+    "dkBll": true,
+    "myKul": true,
+    "referenceNo": "CA/2025/1199"
+  },
+  {
+    "id": "cap-002",
+    "rating": "C16",
+    "ata": "61",
+    "category": "PROPELLERS",
+    "designation": "VARIABLE PITCH AIRCRAFT PROPELLER",
+    "manufacturer": "HAMILTON SUNDSTRAND",
+    "aircraftModel": "ATR 42 DHC8-100",
+    "pnSeries": "792000",
+    "pn": "792000-X",
+    "maintenanceReference": "CMM 61-13-02",
+    "dkSgd": true,
+    "dkBll": true,
+    "myKul": true,
+    "referenceNo": "CA/2025/1200"
+  },
+  {
+    "id": "cap-003",
+    "rating": "C14",
+    "ata": "32",
+    "category": "LANDING GEAR",
+    "designation": "NOSE LANDING GEAR ACTUATOR",
+    "manufacturer": "SAFRAN",
+    "aircraftModel": "A320 FAMILY",
+    "pnSeries": "D51785",
+    "pn": "D51785-12",
+    "maintenanceReference": "CMM 32-45-11",
+    "dkSgd": true,
+    "dkBll": false,
+    "myKul": true,
+    "referenceNo": "CA/2025/1201"
+  }
+]
