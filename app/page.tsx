@@ -5,7 +5,7 @@ import { logoutAction } from "@/features/auth/actions"
 import { getSessionFromCookieStore } from "@/features/auth/session"
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "Home | SkyCaplist",
 }
 
 export default async function Page() {
@@ -15,7 +15,9 @@ export default async function Page() {
     <main className="flex min-h-svh p-6">
       <div className="flex w-full max-w-md flex-col gap-4">
         <h1 className="text-xl font-semibold">SkyCaplist</h1>
-        <p className="text-sm text-muted-foreground">Authenticated session details</p>
+        <p className="text-sm text-muted-foreground">
+          Authenticated session details
+        </p>
         <div className="rounded-md border border-border p-4 text-sm leading-relaxed">
           <p>
             <span className="font-medium">Name:</span> {session?.name ?? "-"}

@@ -1,9 +1,11 @@
 import type { Metadata } from "next"
 import { IconLogout } from "@tabler/icons-react"
 import { Geist_Mono, Inter } from "next/font/google"
+import Image from "next/image"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeToggleButton } from "@/components/theme-toggle-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { logoutAction } from "@/features/auth/actions"
 import { getSessionFromCookieStore } from "@/features/auth/session"
@@ -47,31 +49,43 @@ export default async function RootLayout({
     >
       <body>
         <ThemeProvider>
-          {session ? (
-            <header className="flex items-center justify-end border-b px-6 py-3">
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-medium">{session.name}</span>
-                <Avatar className="size-9">
-                  <AvatarImage
-                    src={avatarSrc ?? undefined}
-                    alt={session.name}
+          <div className="mx-auto flex min-h-svh w-full max-w-5xl flex-col">
+            {session ? (
+              <header className="flex items-center justify-between px-6 py-3">
+                <div className="flex items-center bg-[#051f44] p-3">
+                  <Image
+                    src="/logo-skyways.webp"
+                    alt="Skyways"
+                    width={112}
+                    height={16}
+                    className="h-4 w-auto"
                   />
-                  <AvatarFallback>{avatarFallback}</AvatarFallback>
-                </Avatar>
-                <form action={logoutAction}>
-                  <button
-                    type="submit"
-                    aria-label="Logout"
-                    title="Logout"
-                    className="inline-flex size-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-                  >
-                    <IconLogout size={18} />
-                  </button>
-                </form>
-              </div>
-            </header>
-          ) : null}
-          {children}
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-medium">{session.name}</span>
+                  <Avatar className="size-9">
+                    <AvatarImage
+                      src={avatarSrc ?? undefined}
+                      alt={session.name}
+                    />
+                    <AvatarFallback>{avatarFallback}</AvatarFallback>
+                  </Avatar>
+                  <ThemeToggleButton />
+                  <form action={logoutAction}>
+                    <button
+                      type="submit"
+                      aria-label="Logout"
+                      title="Logout"
+                      className="inline-flex size-9 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                    >
+                      <IconLogout size={18} />
+                    </button>
+                  </form>
+                </div>
+              </header>
+            ) : null}
+            <main className="flex-1">{children}</main>
+          </div>
         </ThemeProvider>
       </body>
     </html>
