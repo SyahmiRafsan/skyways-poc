@@ -16,5 +16,11 @@
     "email": "qam@skycaplist.test",
     "name": "Demo QAM",
     "role": "qam"
+  },
+  {
+    "id": "W001",
+    "email": "wm@skycaplist.test",
+    "name": "Demo WM",
+    "role": "wm"
   }
 ]

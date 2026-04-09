@@ -13,7 +13,7 @@ export default function LoginPage() {
         <h1 className="text-xl font-semibold">SkyCaplist Login</h1>
         <p className="text-sm text-muted-foreground">
           Use one of: user@skycaplist.test, tsm@skycaplist.test,
-          qam@skycaplist.test.
+          qam@skycaplist.test, wm@skycaplist.test.
         </p>
         <LoginForm />
       </div>

@@ -10,10 +10,14 @@ export const metadata: Metadata = {
 }
 
 export default async function Page() {
+  const approvedCapabilities = (capabilitiesData as Capability[]).filter(
+    (capability) => capability.status === "APPROVED"
+  )
+
   return (
     <CapabilityDashboard
       approvals={approvalsData as AuthorityApproval[]}
-      capabilities={capabilitiesData as Capability[]}
+      capabilities={approvedCapabilities}
     />
   )
 }

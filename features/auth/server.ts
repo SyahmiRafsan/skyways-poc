@@ -1,7 +1,7 @@
 import users from "@/features/auth/data/users.json"
 import type { AuthUser, SessionPayload } from "@/features/auth/types"
 
-const VALID_ROLES = new Set(["user", "tsm", "qam"])
+const VALID_ROLES = new Set(["user", "tsm", "qam", "wm"])
 
 export function findUserByEmail(email: string): AuthUser | null {
   const found = (users as AuthUser[]).find((user) => user.email === email)

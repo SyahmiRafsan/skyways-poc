@@ -3,7 +3,6 @@
     "id": "cap-001",
     "rating": "C16",
     "ata": "61",
-    "category": "PROPELLERS",
     "designation": "PROPELLER SPINNER",
     "manufacturer": "HAMILTON SUNDSTRAND",
     "aircraftModel": "ATR 42 DHC8-100",
@@ -13,13 +12,32 @@
     "dkSgd": true,
     "dkBll": true,
     "myKul": true,
-    "referenceNo": "CA/2025/1199"
+    "referenceNo": "CA/2025/1199",
+    "aircraft": "ATR 42 DHC8-100",
+    "ataChapter": 61,
+    "partDesignationDesc": "PROPELLER SPINNER",
+    "category": "PROPELLERS",
+    "partNumberSeries": "790176",
+    "partNumberModelNos": [
+      "790176-1"
+    ],
+    "locations": {
+      "dkSgd": true,
+      "dkBll": true,
+      "myKul": true
+    },
+    "maintenanceReferences": ["CMM 61-13-02"],
+    "equipmentTools": ["Standard propeller balancing kit"],
+    "status": "APPROVED",
+    "submittedByUserId": "U001",
+    "revision": 0,
+    "reviewTrail": [],
+    "currentReviewerRole": null
   },
   {
     "id": "cap-002",
     "rating": "C16",
     "ata": "61",
-    "category": "PROPELLERS",
     "designation": "VARIABLE PITCH AIRCRAFT PROPELLER",
     "manufacturer": "HAMILTON SUNDSTRAND",
     "aircraftModel": "ATR 42 DHC8-100",
@@ -29,13 +47,32 @@
     "dkSgd": true,
     "dkBll": true,
     "myKul": true,
-    "referenceNo": "CA/2025/1200"
+    "referenceNo": "CA/2025/1200",
+    "aircraft": "ATR 42 DHC8-100",
+    "ataChapter": 61,
+    "partDesignationDesc": "VARIABLE PITCH AIRCRAFT PROPELLER",
+    "category": "PROPELLERS",
+    "partNumberSeries": "792000",
+    "partNumberModelNos": [
+      "792000-X"
+    ],
+    "locations": {
+      "dkSgd": true,
+      "dkBll": true,
+      "myKul": true
+    },
+    "maintenanceReferences": ["CMM 61-13-02"],
+    "equipmentTools": ["Propeller fixture set", "Dynamic balancing analyzer"],
+    "status": "APPROVED",
+    "submittedByUserId": "U001",
+    "revision": 0,
+    "reviewTrail": [],
+    "currentReviewerRole": null
   },
   {
     "id": "cap-003",
     "rating": "C14",
     "ata": "32",
-    "category": "LANDING GEAR",
     "designation": "NOSE LANDING GEAR ACTUATOR",
     "manufacturer": "SAFRAN",
     "aircraftModel": "A320 FAMILY",
@@ -45,6 +82,26 @@
     "dkSgd": true,
     "dkBll": false,
     "myKul": true,
-    "referenceNo": "CA/2025/1201"
+    "referenceNo": "CA/2025/1201",
+    "aircraft": "A320 FAMILY",
+    "ataChapter": 32,
+    "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
+    "category": "LANDING GEAR",
+    "partNumberSeries": "D51785",
+    "partNumberModelNos": [
+      "D51785-12"
+    ],
+    "locations": {
+      "dkSgd": true,
+      "dkBll": false,
+      "myKul": true
+    },
+    "maintenanceReferences": ["CMM 32-45-11"],
+    "equipmentTools": ["Hydraulic pressure test bench"],
+    "status": "APPROVED",
+    "submittedByUserId": "U001",
+    "revision": 0,
+    "reviewTrail": [],
+    "currentReviewerRole": null
   }
 ]

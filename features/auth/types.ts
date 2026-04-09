@@ -1,4 +1,4 @@
-export type Role = "user" | "tsm" | "qam"
+export type Role = "user" | "tsm" | "qam" | "wm"
 
 export type AuthUser = {
   id: string
