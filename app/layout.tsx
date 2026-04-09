@@ -14,6 +14,13 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggleButton } from "@/components/theme-toggle-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { logoutAction } from "@/features/auth/actions"
 import { getSessionFromCookieStore } from "@/features/auth/session"
 import {
@@ -41,6 +48,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const currentYear = new Date().getFullYear()
   const session = await getSessionFromCookieStore()
   const myPendingCount = session
     ? getPendingApprovalsForRole(await readCapabilities(), session.role).length
@@ -86,37 +94,48 @@ export default async function RootLayout({
                       Dashboard
                     </Link>
 
-                    <details className="group relative">
-                      <summary className="flex cursor-pointer list-none items-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger
+                        render={
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-auto gap-1 rounded-md px-3 py-2 text-sm font-medium text-foreground"
+                          />
+                        }
+                      >
                         Capabilities
                         <IconChevronDown
                           size={16}
-                          className="text-muted-foreground transition-transform group-open:rotate-180"
+                          className="text-muted-foreground"
                         />
-                      </summary>
-                      <div className="absolute top-full left-0 z-20 mt-2 w-56 rounded-md border border-border bg-popover p-1 shadow-md">
-                        <Link
-                          href="/capabilities"
-                          className="inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="start"
+                        className="w-56 rounded-md border border-border bg-popover p-1 shadow-md"
+                      >
+                        <DropdownMenuItem
+                          render={<Link href="/capabilities" />}
+                          className="gap-2 rounded-md px-2 py-2"
                         >
                           <IconListDetails
                             size={16}
                             className="text-muted-foreground"
                           />
                           Master List
-                        </Link>
-                        <Link
-                          href="/capabilities/new"
-                          className="inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          render={<Link href="/capabilities/new" />}
+                          className="gap-2 rounded-md px-2 py-2"
                         >
                           <IconPlus
                             size={16}
                             className="text-muted-foreground"
                           />
                           Register PN
-                        </Link>
-                      </div>
-                    </details>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
                     <Link
                       href="/approvals"
@@ -124,15 +143,23 @@ export default async function RootLayout({
                     >
                       Approvals
                       {myPendingCount > 0 ? (
-                        <Badge className="min-w-5 px-1.5 tabular-nums">
+                        <Badge className="min-w-5 px-1.5">
                           {myPendingCount}
                         </Badge>
                       ) : null}
                     </Link>
                   </nav>
 
-                  <details className="group relative">
-                    <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-auto gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground"
+                        />
+                      }
+                    >
                       <Avatar className="size-8">
                         <AvatarImage
                           src={avatarSrc ?? undefined}
@@ -143,11 +170,14 @@ export default async function RootLayout({
                       <span>{session.name}</span>
                       <IconChevronDown
                         size={16}
-                        className="text-muted-foreground transition-transform group-open:rotate-180"
+                        className="text-muted-foreground"
                       />
-                    </summary>
+                    </DropdownMenuTrigger>
 
-                    <div className="absolute top-full right-0 z-20 mt-2 w-44 rounded-md border border-border bg-popover p-1 shadow-md">
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-44 rounded-md border border-border bg-popover p-1 shadow-md"
+                    >
                       <ThemeToggleButton
                         showLabel
                         className="h-9 w-full justify-start rounded-md border-0 px-2"
@@ -164,12 +194,16 @@ export default async function RootLayout({
                           Logout
                         </button>
                       </form>
-                    </div>
-                  </details>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               </header>
             ) : null}
             <main className="flex-1">{children}</main>
+            <footer className="mt-auto px-6 py-6 pb-4 text-center text-xs text-muted-foreground uppercase">
+              © {currentYear} SkyCaplist by Skyways Technics. All rights
+              reserved.
+            </footer>
           </div>
         </ThemeProvider>
       </body>

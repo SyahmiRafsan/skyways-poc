@@ -4,6 +4,7 @@ import { useActionState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import type { CapabilityActionState } from "@/features/capabilities/types"
 
@@ -91,7 +92,7 @@ export function ReviewPanel({
         <CardHeader>
           <CardTitle>Authority Submission Actions</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2">
+        <CardContent className="grid gap-4 grid-cols-1">
           <form action={markAuthorityApprovedFormAction} className="space-y-3">
             {markAuthorityApprovedState.error ? (
               <p className="text-sm text-destructive">
@@ -104,6 +105,8 @@ export function ReviewPanel({
                 : "Mark Authority Approved"}
             </Button>
           </form>
+
+          <Separator />
 
           <form action={markAuthorityRejectedFormAction} className="space-y-3">
             <label className="flex flex-col gap-1">
@@ -141,7 +144,7 @@ export function ReviewPanel({
       <CardHeader>
         <CardTitle>Review Actions</CardTitle>
       </CardHeader>
-      <CardContent className="grid gap-4 md:grid-cols-2">
+      <CardContent className="grid gap-4 grid-cols-1">
         <form action={approveFormAction} className="space-y-3">
           <label className="flex flex-col gap-1">
             <span className="text-sm font-medium">Approve Remarks (optional)</span>
@@ -154,6 +157,8 @@ export function ReviewPanel({
             {isApproving ? "Approving..." : "Approve"}
           </Button>
         </form>
+
+        <Separator />
 
         <form action={rejectFormAction} className="space-y-3">
           <label className="flex flex-col gap-1">

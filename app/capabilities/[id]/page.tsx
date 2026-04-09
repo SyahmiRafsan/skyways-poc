@@ -130,7 +130,9 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
   const userIdToName = new Map(
     usersData.map((user) => [user.id, user.name] as const)
   )
-  const roleToUser = new Map(usersData.map((user) => [user.role, user] as const))
+  const roleToUser = new Map(
+    usersData.map((user) => [user.role, user] as const)
+  )
 
   const boundUpdateAction = updateCapabilityAction.bind(null, capability.id)
   const boundSubmitAction = submitCapabilityAction.bind(null, capability.id)
@@ -156,6 +158,161 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
         ? "authority_submitted"
         : "internal"
 
+  if (!canEdit) {
+    return (
+      <main className="space-y-4 p-6">
+        <section className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:items-start">
+          <div className="space-y-4 lg:col-span-2">
+            <section className="mb-8 space-y-3">
+              <h1 className="text-xl font-semibold">
+                PN Form #{capability.referenceNo}
+              </h1>
+              <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-4">
+                <p>
+                  <span className="font-medium">Status</span>
+                  <span className="mt-1 block">
+                    <Badge variant="secondary" className="font-normal">
+                      {formatStatusLabel(capability.status)}
+                    </Badge>
+                  </span>
+                </p>
+                <p>
+                  <span className="font-medium">Revision</span>
+                  <span className="mt-1 block text-muted-foreground">
+                    R{capability.revision}
+                  </span>
+                </p>
+                {capability.status !== "AUTHORITY_APPROVED" ? (
+                  <p>
+                    <span className="font-medium">Current Reviewer</span>
+                    <span className="mt-1 block text-muted-foreground">
+                      {capability.currentReviewerRole
+                        ? (() => {
+                            const reviewer = roleToUser.get(
+                              capability.currentReviewerRole
+                            )
+                            if (!reviewer) return capability.currentReviewerRole
+                            return `${reviewer.name} (${reviewer.id})`
+                          })()
+                        : "-"}
+                    </span>
+                  </p>
+                ) : null}
+                <p>
+                  <span className="font-medium">Submitted By</span>
+                  <span className="mt-1 block text-muted-foreground">
+                    {userIdToName.get(capability.submittedByUserId) ??
+                      capability.submittedByUserId}{" "}
+                    ({capability.submittedByUserId})
+                  </span>
+                </p>
+              </div>
+            </section>
+
+            <CapabilityView capability={capability} />
+          </div>
+
+          <div className="space-y-8 lg:col-span-1">
+            {canReview ? (
+              <ReviewPanel
+                mode={reviewPanelMode}
+                approveAction={boundApproveAction}
+                rejectAction={boundRejectAction}
+                markSubmittedAction={boundMarkSubmittedAction}
+                markAuthorityApprovedAction={boundMarkAuthorityApprovedAction}
+                markAuthorityRejectedAction={boundMarkAuthorityRejectedAction}
+              />
+            ) : (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Actions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm text-muted-foreground">
+                    No actions available for your role in the current status.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+
+            <section className="space-y-3">
+              <h2 className="text-lg font-semibold">Review History</h2>
+              {capability.reviewTrail.length === 0 ? (
+                <p className="text-sm text-muted-foreground">
+                  No review events yet.
+                </p>
+              ) : (
+                <ul className="space-y-2 text-sm">
+                  {capability.reviewTrail.map((event, index) => {
+                    const previous = capability.reviewTrail[index - 1]
+                    const sincePrevious = previous
+                      ? formatDuration(previous.at, event.at)
+                      : "-"
+                    const showDuration = sincePrevious !== "-"
+
+                    return (
+                      <li
+                        key={`${event.at}-${index}`}
+                        className="rounded-md border border-border p-3"
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <p>
+                            <span className="font-medium">
+                              {getActionLabel(event.action)}
+                            </span>{" "}
+                            {userIdToName.get(event.byUserId) ?? event.byUserId}
+                          </p>
+                          {showDuration ? (
+                            <span className="text-xs text-muted-foreground">
+                              {sincePrevious}
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="my-2 flex flex-wrap items-center gap-2 text-muted-foreground">
+                          <Badge
+                            variant="secondary"
+                            className="max-w-32 justify-start"
+                          >
+                            <span
+                              className="block w-full truncate text-left"
+                              title={formatStatusLabel(event.fromStatus)}
+                            >
+                              {formatStatusLabel(event.fromStatus)}
+                            </span>
+                          </Badge>
+                          <IconArrowRight size={14} className="shrink-0" />
+                          <Badge
+                            variant="secondary"
+                            className="max-w-32 justify-start"
+                          >
+                            <span
+                              className="block w-full truncate text-left"
+                              title={formatStatusLabel(event.toStatus)}
+                            >
+                              {formatStatusLabel(event.toStatus)}
+                            </span>
+                          </Badge>
+                        </div>
+                        <p className="mt-1 text-muted-foreground">
+                          {new Date(event.at).toLocaleString()}
+                        </p>
+                        {event.remarks ? (
+                          <p className="text-muted-foreground">
+                            Remarks: {event.remarks}
+                          </p>
+                        ) : null}
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+            </section>
+          </div>
+        </section>
+      </main>
+    )
+  }
+
   return (
     <main className="space-y-4 p-6">
       <Card>
@@ -178,7 +335,9 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
               <span className="font-medium">Current Reviewer:</span>{" "}
               {capability.currentReviewerRole
                 ? (() => {
-                    const reviewer = roleToUser.get(capability.currentReviewerRole)
+                    const reviewer = roleToUser.get(
+                      capability.currentReviewerRole
+                    )
                     if (!reviewer) return capability.currentReviewerRole
                     return `${reviewer.name} (${reviewer.id})`
                   })()
@@ -253,13 +412,31 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                         </span>
                       ) : null}
                     </div>
-                    <div className="mt-1 flex items-center gap-2 text-muted-foreground">
-                      <Badge variant="secondary">
-                        {formatStatusLabel(event.fromStatus)}
+                    <div className="mt-1 flex flex-wrap items-center gap-2 text-muted-foreground">
+                      <Badge
+                        variant="secondary"
+                        className="max-w-24 justify-start"
+                        title={formatStatusLabel(event.fromStatus)}
+                      >
+                        <span
+                          className="block w-full truncate text-left [direction:rtl]"
+                          title={formatStatusLabel(event.fromStatus)}
+                        >
+                          {formatStatusLabel(event.fromStatus)}
+                        </span>
                       </Badge>
-                      <IconArrowRight size={14} />
-                      <Badge variant="secondary">
-                        {formatStatusLabel(event.toStatus)}
+                      <IconArrowRight size={14} className="shrink-0" />
+                      <Badge
+                        variant="secondary"
+                        className="max-w-24 justify-start"
+                        title={formatStatusLabel(event.toStatus)}
+                      >
+                        <span
+                          className="block w-full truncate text-left [direction:rtl]"
+                          title={formatStatusLabel(event.toStatus)}
+                        >
+                          {formatStatusLabel(event.toStatus)}
+                        </span>
                       </Badge>
                     </div>
                     <p className="mt-1 text-muted-foreground">

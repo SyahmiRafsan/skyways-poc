@@ -318,10 +318,7 @@ export function CapabilityDashboard({
                   >
                     <span>{primaryLabel}</span>
                     {primaryCount > 0 ? (
-                      <Badge
-                        variant="secondary"
-                        className="min-w-5 px-1.5 tabular-nums"
-                      >
+                      <Badge variant="secondary" className="min-w-5 px-1.5">
                         {primaryCount}
                       </Badge>
                     ) : null}
@@ -335,10 +332,7 @@ export function CapabilityDashboard({
                   >
                     <span>{secondaryLabel}</span>
                     {secondaryCount > 0 ? (
-                      <Badge
-                        variant="secondary"
-                        className="min-w-5 px-1.5 tabular-nums"
-                      >
+                      <Badge variant="secondary" className="min-w-5 px-1.5">
                         {secondaryCount}
                       </Badge>
                     ) : null}
