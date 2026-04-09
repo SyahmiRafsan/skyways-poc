@@ -484,7 +484,7 @@ export function CapabilityForm({
               >
                 Aircraft Model (one line each)
               </FieldLegend>
-              <FieldGroup>
+              <FieldGroup className="gap-3">
                 {aircraftModels.fields.map((item, index) => (
                   <Field
                     key={item.id}
@@ -558,7 +558,7 @@ export function CapabilityForm({
               >
                 Part Number / Model Number (one line each)
               </FieldLegend>
-              <FieldGroup>
+              <FieldGroup className="gap-3">
                 {partNumberModelNos.fields.map((item, index) => (
                   <Field
                     key={item.id}
@@ -623,7 +623,7 @@ export function CapabilityForm({
               >
                 Maintenance References (one line each)
               </FieldLegend>
-              <FieldGroup>
+              <FieldGroup className="gap-3">
                 {maintenanceReferences.fields.map((item, index) => (
                   <Field
                     key={item.id}
@@ -688,7 +688,7 @@ export function CapabilityForm({
               >
                 Equipment / Tools (one line each)
               </FieldLegend>
-              <FieldGroup>
+              <FieldGroup className="gap-3">
                 {equipmentTools.fields.map((item, index) => (
                   <Field
                     key={item.id}

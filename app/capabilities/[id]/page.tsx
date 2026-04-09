@@ -150,209 +150,118 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
         ? "authority_submitted"
         : "internal"
 
-  if (!canEdit) {
-    return (
-      <main className="space-y-4 p-6">
-        <section className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:items-start">
-          <div className="space-y-4 lg:col-span-2">
-            <section className="mb-8 space-y-3">
-              <h1 className="text-xl font-semibold">
-                PN Form #{capability.referenceNo}
-              </h1>
-              <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-4">
-                <p>
-                  <span className="font-medium">Status</span>
-                  <span className="mt-1 block">
-                    <Badge variant="secondary" className="font-normal">
-                      {formatStatusLabel(capability.status)}
-                    </Badge>
-                  </span>
-                </p>
-                <p>
-                  <span className="font-medium">Revision</span>
-                  <span className="mt-1 block text-muted-foreground">
-                    R{capability.revision}
-                  </span>
-                </p>
-                {capability.status !== "AUTHORITY_APPROVED" ? (
-                  <p>
-                    <span className="font-medium">Current Reviewer</span>
-                    <span className="mt-1 block text-muted-foreground">
-                      {capability.currentReviewerRole
-                        ? (() => {
-                            const reviewer = roleToUser.get(
-                              capability.currentReviewerRole
-                            )
-                            if (!reviewer) return capability.currentReviewerRole
-                            return (
-                              <UserWithAvatar
-                                name={reviewer.name}
-                                avatarUrl={reviewer.avatarUrl}
-                                muted
-                              />
-                            )
-                          })()
-                        : "-"}
-                    </span>
-                  </p>
-                ) : null}
-                <p>
-                  <span className="font-medium">Submitted By</span>
-                  <span className="mt-1 block text-muted-foreground">
-                    {(() => {
-                      const submitter = userIdToUser.get(
-                        capability.submittedByUserId
-                      )
-                      if (!submitter) {
-                        return capability.submittedByUserId
-                      }
-
-                      return (
-                        <UserWithAvatar
-                          name={submitter.name}
-                          avatarUrl={submitter.avatarUrl}
-                          muted
-                        />
-                      )
-                    })()}
-                  </span>
-                </p>
-              </div>
-            </section>
-
-            <Separator />
-            <CapabilityView capability={capability} />
-          </div>
-
-          <div className="space-y-8 lg:col-span-1">
-            {canReview ? (
-              <ReviewPanel
-                mode={reviewPanelMode}
-                approveAction={boundApproveAction}
-                rejectAction={boundRejectAction}
-                markSubmittedAction={boundMarkSubmittedAction}
-                markAuthorityApprovedAction={boundMarkAuthorityApprovedAction}
-                markAuthorityRejectedAction={boundMarkAuthorityRejectedAction}
-              />
-            ) : (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Actions</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">
-                    No actions available for your role in the current status.
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-
-            <ReviewHistory
-              events={capability.reviewTrail}
-              users={usersData}
-              variant="sidebar"
-            />
-          </div>
-        </section>
-      </main>
-    )
-  }
-
   return (
     <main className="space-y-4 p-6">
-      <section className="space-y-3">
-        <h1 className="text-xl font-semibold">
-          PN Form #{capability.referenceNo}
-        </h1>
-        <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-4">
-          <p>
-            <span className="font-medium">Status</span>
-            <span className="mt-1 block">
-              <Badge variant="secondary" className="font-normal">
-                {formatStatusLabel(capability.status)}
-              </Badge>
-            </span>
-          </p>
-          <p>
-            <span className="font-medium">Revision</span>
-            <span className="mt-1 block text-muted-foreground">
-              R{capability.revision}
-            </span>
-          </p>
-          {capability.status !== "AUTHORITY_APPROVED" ? (
-            <p>
-              <span className="font-medium">Current Reviewer</span>
-              <span className="mt-1 block text-muted-foreground">
-                {capability.currentReviewerRole
-                  ? (() => {
-                      const reviewer = roleToUser.get(
-                        capability.currentReviewerRole
-                      )
-                      if (!reviewer) return capability.currentReviewerRole
-                      return (
-                        <UserWithAvatar
-                          name={reviewer.name}
-                          avatarUrl={reviewer.avatarUrl}
-                          muted
-                        />
-                      )
-                    })()
-                  : "-"}
-              </span>
-            </p>
-          ) : null}
-          <p>
-            <span className="font-medium">Submitted By</span>
-            <span className="mt-1 block text-muted-foreground">
-              {(() => {
-                const submitter = userIdToUser.get(capability.submittedByUserId)
-                if (!submitter) {
-                  return capability.submittedByUserId
-                }
+      <section className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:items-start">
+        <div className="space-y-4 lg:col-span-2">
+          <section className="mb-8 space-y-3">
+            <h1 className="text-xl font-semibold">
+              PN Form #{capability.referenceNo}
+            </h1>
+            <div className="grid grid-cols-1 gap-2 text-sm md:grid-cols-4">
+              <p>
+                <span className="font-medium">Status</span>
+                <span className="mt-1 block">
+                  <Badge variant="secondary" className="font-normal">
+                    {formatStatusLabel(capability.status)}
+                  </Badge>
+                </span>
+              </p>
+              <p>
+                <span className="font-medium">Revision</span>
+                <span className="mt-1 block text-muted-foreground">
+                  R{capability.revision}
+                </span>
+              </p>
+              {capability.status !== "AUTHORITY_APPROVED" ? (
+                <p>
+                  <span className="font-medium">Current Reviewer</span>
+                  <span className="mt-1 block text-muted-foreground">
+                    {capability.currentReviewerRole
+                      ? (() => {
+                          const reviewer = roleToUser.get(
+                            capability.currentReviewerRole
+                          )
+                          if (!reviewer) return capability.currentReviewerRole
+                          return (
+                            <UserWithAvatar
+                              name={reviewer.name}
+                              avatarUrl={reviewer.avatarUrl}
+                              muted
+                            />
+                          )
+                        })()
+                      : "-"}
+                  </span>
+                </p>
+              ) : null}
+              <p>
+                <span className="font-medium">Submitted By</span>
+                <span className="mt-1 block text-muted-foreground">
+                  {(() => {
+                    const submitter = userIdToUser.get(capability.submittedByUserId)
+                    if (!submitter) {
+                      return capability.submittedByUserId
+                    }
 
-                return (
-                  <UserWithAvatar
-                    name={submitter.name}
-                    avatarUrl={submitter.avatarUrl}
-                    muted
-                  />
-                )
-              })()}
-            </span>
-          </p>
+                    return (
+                      <UserWithAvatar
+                        name={submitter.name}
+                        avatarUrl={submitter.avatarUrl}
+                        muted
+                      />
+                    )
+                  })()}
+                </span>
+              </p>
+            </div>
+          </section>
+
+          <Separator />
+
+          {canEdit ? (
+            <CapabilityForm
+              title="Update PN Form"
+              values={formValues}
+              saveAction={boundUpdateAction}
+              saveButtonLabel="Save Changes"
+              submitAction={boundSubmitAction}
+            />
+          ) : (
+            <CapabilityView capability={capability} />
+          )}
+        </div>
+
+        <div className="space-y-8 lg:col-span-1">
+          {canReview ? (
+            <ReviewPanel
+              mode={reviewPanelMode}
+              approveAction={boundApproveAction}
+              rejectAction={boundRejectAction}
+              markSubmittedAction={boundMarkSubmittedAction}
+              markAuthorityApprovedAction={boundMarkAuthorityApprovedAction}
+              markAuthorityRejectedAction={boundMarkAuthorityRejectedAction}
+            />
+          ) : (
+            <Card>
+              <CardHeader>
+                <CardTitle>Actions</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  No actions available for your role in the current status.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+
+          <ReviewHistory
+            events={capability.reviewTrail}
+            users={usersData}
+            variant="sidebar"
+          />
         </div>
       </section>
-
-      <Separator />
-
-      {canEdit ? (
-        <CapabilityForm
-          title="Update PN Form"
-          values={formValues}
-          saveAction={boundUpdateAction}
-          saveButtonLabel="Save Changes"
-          submitAction={boundSubmitAction}
-        />
-      ) : (
-        <CapabilityView capability={capability} />
-      )}
-
-      {canReview ? (
-        <ReviewPanel
-          mode={reviewPanelMode}
-          approveAction={boundApproveAction}
-          rejectAction={boundRejectAction}
-          markSubmittedAction={boundMarkSubmittedAction}
-          markAuthorityApprovedAction={boundMarkAuthorityApprovedAction}
-          markAuthorityRejectedAction={boundMarkAuthorityRejectedAction}
-        />
-      ) : null}
-
-      <Card>
-        <CardContent>
-          <ReviewHistory events={capability.reviewTrail} users={usersData} />
-        </CardContent>
-      </Card>
     </main>
   )
 }

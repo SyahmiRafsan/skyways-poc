@@ -37,6 +37,7 @@ type CapabilityDashboardProps = {
   approvals: AuthorityApproval[]
   capabilities: Capability[]
   secondaryCapabilities?: Capability[]
+  draftCapabilities?: Capability[]
   title?: string
   countLabel?: string
   searchPlaceholder?: string
@@ -44,9 +45,10 @@ type CapabilityDashboardProps = {
   showSearch?: boolean
   showApprovalsCards?: boolean
   showDataViewToggle?: boolean
-  defaultDataView?: "primary" | "secondary"
+  defaultDataView?: "primary" | "secondary" | "drafts"
   primaryLabel?: string
   secondaryLabel?: string
+  draftsLabel?: string
 }
 
 type DashboardRow = {
@@ -192,6 +194,7 @@ export function CapabilityDashboard({
   approvals,
   capabilities,
   secondaryCapabilities,
+  draftCapabilities,
   title = "Capability List Management",
   countLabel = "Total Capabilities",
   searchPlaceholder = "Search by caplist, PN, OEM, Aircraft Type",
@@ -202,24 +205,36 @@ export function CapabilityDashboard({
   defaultDataView = "primary",
   primaryLabel = "Primary",
   secondaryLabel = "Secondary",
+  draftsLabel = "Drafts",
 }: CapabilityDashboardProps) {
   const [query, setQuery] = useState("")
-  const [dataView, setDataView] = useState<"primary" | "secondary">(
+  const [dataView, setDataView] = useState<"primary" | "secondary" | "drafts">(
     defaultDataView
   )
   const [filters, setFilters] =
     useState<Record<ColumnKey, string>>(createInitialFilters)
   const hasSecondaryData = Boolean(secondaryCapabilities)
+  const hasDraftData = Boolean(draftCapabilities)
   const primaryCount = capabilities.length
   const secondaryCount = secondaryCapabilities?.length ?? 0
+  const draftsCount = draftCapabilities?.length ?? 0
   const sourceCapabilities = useMemo(
-    () =>
-      showDataViewToggle && hasSecondaryData && dataView === "secondary"
-        ? (secondaryCapabilities ?? [])
-        : capabilities,
+    () => {
+      if (showDataViewToggle && hasDraftData && dataView === "drafts") {
+        return draftCapabilities ?? []
+      }
+
+      if (showDataViewToggle && hasSecondaryData && dataView === "secondary") {
+        return secondaryCapabilities ?? []
+      }
+
+      return capabilities
+    },
     [
       capabilities,
       dataView,
+      draftCapabilities,
+      hasDraftData,
       hasSecondaryData,
       secondaryCapabilities,
       showDataViewToggle,
@@ -307,7 +322,7 @@ export function CapabilityDashboard({
                   placeholder={searchPlaceholder}
                 />
               </label>
-              {showDataViewToggle && hasSecondaryData ? (
+              {showDataViewToggle && (hasSecondaryData || hasDraftData) ? (
                 <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1">
                   <Button
                     type="button"
@@ -323,20 +338,36 @@ export function CapabilityDashboard({
                       </Badge>
                     ) : null}
                   </Button>
-                  <Button
-                    type="button"
-                    variant={dataView === "secondary" ? "default" : "outline"}
-                    size="sm"
-                    className="h-9 px-3"
-                    onClick={() => setDataView("secondary")}
-                  >
-                    <span>{secondaryLabel}</span>
-                    {secondaryCount > 0 ? (
+                  {hasSecondaryData ? (
+                    <Button
+                      type="button"
+                      variant={dataView === "secondary" ? "default" : "outline"}
+                      size="sm"
+                      className="h-9 px-3"
+                      onClick={() => setDataView("secondary")}
+                    >
+                      <span>{secondaryLabel}</span>
+                      {secondaryCount > 0 ? (
+                        <Badge variant="secondary" className="min-w-5 px-1.5">
+                          {secondaryCount}
+                        </Badge>
+                      ) : null}
+                    </Button>
+                  ) : null}
+                  {hasDraftData ? (
+                    <Button
+                      type="button"
+                      variant={dataView === "drafts" ? "default" : "outline"}
+                      size="sm"
+                      className="h-9 px-3"
+                      onClick={() => setDataView("drafts")}
+                    >
+                      <span>{draftsLabel}</span>
                       <Badge variant="secondary" className="min-w-5 px-1.5">
-                        {secondaryCount}
+                        {draftsCount}
                       </Badge>
-                    ) : null}
-                  </Button>
+                    </Button>
+                  ) : null}
                 </div>
               ) : null}
             </div>
