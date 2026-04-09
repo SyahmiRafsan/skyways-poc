@@ -285,9 +285,9 @@ export function CapabilityForm({
         {serverError ? <FieldError>{serverError}</FieldError> : null}
 
         <form onSubmit={handleSave} className="space-y-6">
-          <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-x-6">
             <Field data-invalid={!!form.formState.errors.referenceNo}>
-              <FieldLabel htmlFor="referenceNo">Reference No</FieldLabel>
+              <FieldLabel htmlFor="referenceNo">Reference Number</FieldLabel>
               <Input
                 id="referenceNo"
                 {...form.register("referenceNo")}
@@ -425,6 +425,9 @@ export function CapabilityForm({
               />
             </Field>
 
+          </FieldGroup>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-x-6">
             <Field data-invalid={!!form.formState.errors.manufacturer}>
               <FieldLabel htmlFor="manufacturer">Manufacturer</FieldLabel>
               <Input
@@ -436,10 +439,68 @@ export function CapabilityForm({
               <FieldError errors={[form.formState.errors.manufacturer]} />
             </Field>
 
-            <Field
-              className="md:col-span-2"
-              data-invalid={!!form.formState.errors.partNumberSeries}
-            >
+            <FieldSet>
+              <FieldLegend
+                variant="label"
+                className={aircraftModelsError ? "text-destructive" : ""}
+              >
+                Aircraft Model (one line each)
+              </FieldLegend>
+              <FieldGroup>
+                {aircraftModels.fields.map((item, index) => (
+                  <Field
+                    key={item.id}
+                    data-invalid={
+                      !!form.formState.errors.aircraftModels?.[index]?.value
+                    }
+                  >
+                    <div className="flex items-center gap-2">
+                      <Input
+                        {...form.register(`aircraftModels.${index}.value` as const)}
+                        readOnly={readOnly}
+                        disabled={readOnly}
+                        placeholder={`Aircraft model ${index + 1}`}
+                      />
+                      {!readOnly ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon-sm"
+                          onClick={() => {
+                            if (aircraftModels.fields.length === 1) {
+                              form.setValue("aircraftModels.0.value", "")
+                              return
+                            }
+                            aircraftModels.remove(index)
+                          }}
+                        >
+                          <IconTrash size={16} />
+                        </Button>
+                      ) : null}
+                    </div>
+                    <FieldError
+                      errors={[form.formState.errors.aircraftModels?.[index]?.value]}
+                    />
+                  </Field>
+                ))}
+              </FieldGroup>
+              {!readOnly ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => aircraftModels.append({ value: "" })}
+                >
+                  <IconPlus size={16} />
+                  Add line
+                </Button>
+              ) : null}
+              <FieldError errors={[aircraftModelsError]} />
+            </FieldSet>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-x-6">
+            <Field data-invalid={!!form.formState.errors.partNumberSeries}>
               <FieldLabel htmlFor="partNumberSeries">
                 Part Number Series
               </FieldLabel>
@@ -451,257 +512,200 @@ export function CapabilityForm({
               />
               <FieldError errors={[form.formState.errors.partNumberSeries]} />
             </Field>
-          </FieldGroup>
 
-          <FieldSet>
-            <FieldLegend
-              variant="label"
-              className={aircraftModelsError ? "text-destructive" : ""}
-            >
-              Aircraft Model (one line each)
-            </FieldLegend>
-            <FieldGroup>
-              {aircraftModels.fields.map((item, index) => (
-                <Field
-                  key={item.id}
-                  data-invalid={
-                    !!form.formState.errors.aircraftModels?.[index]?.value
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    <Input
-                      {...form.register(`aircraftModels.${index}.value` as const)}
-                      readOnly={readOnly}
-                      disabled={readOnly}
-                      placeholder={`Aircraft model ${index + 1}`}
-                    />
-                    {!readOnly ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        onClick={() => {
-                          if (aircraftModels.fields.length === 1) {
-                            form.setValue("aircraftModels.0.value", "")
-                            return
-                          }
-                          aircraftModels.remove(index)
-                        }}
-                      >
-                        <IconTrash size={16} />
-                      </Button>
-                    ) : null}
-                  </div>
-                  <FieldError
-                    errors={[form.formState.errors.aircraftModels?.[index]?.value]}
-                  />
-                </Field>
-              ))}
-            </FieldGroup>
-            {!readOnly ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => aircraftModels.append({ value: "" })}
+            <FieldSet>
+              <FieldLegend
+                variant="label"
+                className={partNumberModelNosError ? "text-destructive" : ""}
               >
-                <IconPlus size={16} />
-                Add line
-              </Button>
-            ) : null}
-            <FieldError errors={[aircraftModelsError]} />
-          </FieldSet>
+                Part Number / Model Number (one line each)
+              </FieldLegend>
+              <FieldGroup>
+                {partNumberModelNos.fields.map((item, index) => (
+                  <Field
+                    key={item.id}
+                    data-invalid={
+                      !!form.formState.errors.partNumberModelNos?.[index]?.value
+                    }
+                  >
+                    <div className="flex items-center gap-2">
+                      <Input
+                        {...form.register(
+                          `partNumberModelNos.${index}.value` as const
+                        )}
+                        readOnly={readOnly}
+                        disabled={readOnly}
+                        placeholder={`Part number/model ${index + 1}`}
+                      />
+                      {!readOnly ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon-sm"
+                          onClick={() => {
+                            if (partNumberModelNos.fields.length === 1) {
+                              form.setValue(`partNumberModelNos.0.value`, "")
+                              return
+                            }
+                            partNumberModelNos.remove(index)
+                          }}
+                        >
+                          <IconTrash size={16} />
+                        </Button>
+                      ) : null}
+                    </div>
+                    <FieldError
+                      errors={[
+                        form.formState.errors.partNumberModelNos?.[index]?.value,
+                      ]}
+                    />
+                  </Field>
+                ))}
+              </FieldGroup>
+              {!readOnly ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => partNumberModelNos.append({ value: "" })}
+                >
+                  <IconPlus size={16} />
+                  Add line
+                </Button>
+              ) : null}
+              <FieldError errors={[partNumberModelNosError]} />
+            </FieldSet>
+          </div>
 
-          <FieldSet>
-            <FieldLegend
-              variant="label"
-              className={partNumberModelNosError ? "text-destructive" : ""}
-            >
-              Part Number / Model No (one line each)
-            </FieldLegend>
-            <FieldGroup>
-              {partNumberModelNos.fields.map((item, index) => (
-                <Field
-                  key={item.id}
-                  data-invalid={
-                    !!form.formState.errors.partNumberModelNos?.[index]?.value
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    <Input
-                      {...form.register(
-                        `partNumberModelNos.${index}.value` as const
-                      )}
-                      readOnly={readOnly}
-                      disabled={readOnly}
-                      placeholder={`Part number/model ${index + 1}`}
-                    />
-                    {!readOnly ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        onClick={() => {
-                          if (partNumberModelNos.fields.length === 1) {
-                            form.setValue(`partNumberModelNos.0.value`, "")
-                            return
-                          }
-                          partNumberModelNos.remove(index)
-                        }}
-                      >
-                        <IconTrash size={16} />
-                      </Button>
-                    ) : null}
-                  </div>
-                  <FieldError
-                    errors={[
-                      form.formState.errors.partNumberModelNos?.[index]?.value,
-                    ]}
-                  />
-                </Field>
-              ))}
-            </FieldGroup>
-            {!readOnly ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => partNumberModelNos.append({ value: "" })}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-x-6">
+            <FieldSet>
+              <FieldLegend
+                variant="label"
+                className={maintenanceReferencesError ? "text-destructive" : ""}
               >
-                <IconPlus size={16} />
-                Add line
-              </Button>
-            ) : null}
-            <FieldError errors={[partNumberModelNosError]} />
-          </FieldSet>
+                Maintenance References (one line each)
+              </FieldLegend>
+              <FieldGroup>
+                {maintenanceReferences.fields.map((item, index) => (
+                  <Field
+                    key={item.id}
+                    data-invalid={
+                      !!form.formState.errors.maintenanceReferences?.[index]
+                        ?.value
+                    }
+                  >
+                    <div className="flex items-center gap-2">
+                      <Input
+                        {...form.register(
+                          `maintenanceReferences.${index}.value` as const
+                        )}
+                        readOnly={readOnly}
+                        disabled={readOnly}
+                        placeholder={`Maintenance reference ${index + 1}`}
+                      />
+                      {!readOnly ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon-sm"
+                          onClick={() => {
+                            if (maintenanceReferences.fields.length === 1) {
+                              form.setValue(`maintenanceReferences.0.value`, "")
+                              return
+                            }
+                            maintenanceReferences.remove(index)
+                          }}
+                        >
+                          <IconTrash size={16} />
+                        </Button>
+                      ) : null}
+                    </div>
+                    <FieldError
+                      errors={[
+                        form.formState.errors.maintenanceReferences?.[index]
+                          ?.value,
+                      ]}
+                    />
+                  </Field>
+                ))}
+              </FieldGroup>
+              {!readOnly ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => maintenanceReferences.append({ value: "" })}
+                >
+                  <IconPlus size={16} />
+                  Add line
+                </Button>
+              ) : null}
+              <FieldError errors={[maintenanceReferencesError]} />
+            </FieldSet>
 
-          <FieldSet>
-            <FieldLegend
-              variant="label"
-              className={maintenanceReferencesError ? "text-destructive" : ""}
-            >
-              Maintenance References (one line each)
-            </FieldLegend>
-            <FieldGroup>
-              {maintenanceReferences.fields.map((item, index) => (
-                <Field
-                  key={item.id}
-                  data-invalid={
-                    !!form.formState.errors.maintenanceReferences?.[index]
-                      ?.value
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    <Input
-                      {...form.register(
-                        `maintenanceReferences.${index}.value` as const
-                      )}
-                      readOnly={readOnly}
-                      disabled={readOnly}
-                      placeholder={`Maintenance reference ${index + 1}`}
-                    />
-                    {!readOnly ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        onClick={() => {
-                          if (maintenanceReferences.fields.length === 1) {
-                            form.setValue(`maintenanceReferences.0.value`, "")
-                            return
-                          }
-                          maintenanceReferences.remove(index)
-                        }}
-                      >
-                        <IconTrash size={16} />
-                      </Button>
-                    ) : null}
-                  </div>
-                  <FieldError
-                    errors={[
-                      form.formState.errors.maintenanceReferences?.[index]
-                        ?.value,
-                    ]}
-                  />
-                </Field>
-              ))}
-            </FieldGroup>
-            {!readOnly ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => maintenanceReferences.append({ value: "" })}
+            <FieldSet>
+              <FieldLegend
+                variant="label"
+                className={equipmentToolsError ? "text-destructive" : ""}
               >
-                <IconPlus size={16} />
-                Add line
-              </Button>
-            ) : null}
-            <FieldError errors={[maintenanceReferencesError]} />
-          </FieldSet>
-
-          <FieldSet>
-            <FieldLegend
-              variant="label"
-              className={equipmentToolsError ? "text-destructive" : ""}
-            >
-              Equipment / Tools (one line each)
-            </FieldLegend>
-            <FieldGroup>
-              {equipmentTools.fields.map((item, index) => (
-                <Field
-                  key={item.id}
-                  data-invalid={
-                    !!form.formState.errors.equipmentTools?.[index]?.value
-                  }
-                >
-                  <div className="flex items-center gap-2">
-                    <Input
-                      {...form.register(
-                        `equipmentTools.${index}.value` as const
-                      )}
-                      readOnly={readOnly}
-                      disabled={readOnly}
-                      placeholder={`Equipment/tool ${index + 1}`}
+                Equipment / Tools (one line each)
+              </FieldLegend>
+              <FieldGroup>
+                {equipmentTools.fields.map((item, index) => (
+                  <Field
+                    key={item.id}
+                    data-invalid={
+                      !!form.formState.errors.equipmentTools?.[index]?.value
+                    }
+                  >
+                    <div className="flex items-center gap-2">
+                      <Input
+                        {...form.register(
+                          `equipmentTools.${index}.value` as const
+                        )}
+                        readOnly={readOnly}
+                        disabled={readOnly}
+                        placeholder={`Equipment/tool ${index + 1}`}
+                      />
+                      {!readOnly ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="icon-sm"
+                          onClick={() => {
+                            if (equipmentTools.fields.length === 1) {
+                              form.setValue(`equipmentTools.0.value`, "")
+                              return
+                            }
+                            equipmentTools.remove(index)
+                          }}
+                        >
+                          <IconTrash size={16} />
+                        </Button>
+                      ) : null}
+                    </div>
+                    <FieldError
+                      errors={[
+                        form.formState.errors.equipmentTools?.[index]?.value,
+                      ]}
                     />
-                    {!readOnly ? (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="icon-sm"
-                        onClick={() => {
-                          if (equipmentTools.fields.length === 1) {
-                            form.setValue(`equipmentTools.0.value`, "")
-                            return
-                          }
-                          equipmentTools.remove(index)
-                        }}
-                      >
-                        <IconTrash size={16} />
-                      </Button>
-                    ) : null}
-                  </div>
-                  <FieldError
-                    errors={[
-                      form.formState.errors.equipmentTools?.[index]?.value,
-                    ]}
-                  />
-                </Field>
-              ))}
-            </FieldGroup>
-            {!readOnly ? (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => equipmentTools.append({ value: "" })}
-              >
-                <IconPlus size={16} />
-                Add line
-              </Button>
-            ) : null}
-            <FieldError errors={[equipmentToolsError]} />
-          </FieldSet>
+                  </Field>
+                ))}
+              </FieldGroup>
+              {!readOnly ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => equipmentTools.append({ value: "" })}
+                >
+                  <IconPlus size={16} />
+                  Add line
+                </Button>
+              ) : null}
+              <FieldError errors={[equipmentToolsError]} />
+            </FieldSet>
+          </div>
 
           {!readOnly ? (
             <div className="flex flex-wrap gap-2 pt-2">
