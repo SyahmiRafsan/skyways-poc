@@ -38,6 +38,7 @@ type CapabilityDashboardProps = {
   capabilities: Capability[]
   secondaryCapabilities?: Capability[]
   draftCapabilities?: Capability[]
+  rejectedCapabilities?: Capability[]
   title?: string
   countLabel?: string
   searchPlaceholder?: string
@@ -45,10 +46,11 @@ type CapabilityDashboardProps = {
   showSearch?: boolean
   showApprovalsCards?: boolean
   showDataViewToggle?: boolean
-  defaultDataView?: "primary" | "secondary" | "drafts"
+  defaultDataView?: "primary" | "secondary" | "drafts" | "rejected"
   primaryLabel?: string
   secondaryLabel?: string
   draftsLabel?: string
+  rejectedLabel?: string
 }
 
 type DashboardRow = {
@@ -195,6 +197,7 @@ export function CapabilityDashboard({
   capabilities,
   secondaryCapabilities,
   draftCapabilities,
+  rejectedCapabilities,
   title = "Capability List Management",
   countLabel = "Total Capabilities",
   searchPlaceholder = "Search by caplist, PN, OEM, Aircraft Type",
@@ -206,20 +209,27 @@ export function CapabilityDashboard({
   primaryLabel = "Primary",
   secondaryLabel = "Secondary",
   draftsLabel = "Drafts",
+  rejectedLabel = "Rejected",
 }: CapabilityDashboardProps) {
   const [query, setQuery] = useState("")
-  const [dataView, setDataView] = useState<"primary" | "secondary" | "drafts">(
-    defaultDataView
-  )
+  const [dataView, setDataView] = useState<
+    "primary" | "secondary" | "drafts" | "rejected"
+  >(defaultDataView)
   const [filters, setFilters] =
     useState<Record<ColumnKey, string>>(createInitialFilters)
   const hasSecondaryData = Boolean(secondaryCapabilities)
   const hasDraftData = Boolean(draftCapabilities)
+  const hasRejectedData = Boolean(rejectedCapabilities)
   const primaryCount = capabilities.length
   const secondaryCount = secondaryCapabilities?.length ?? 0
   const draftsCount = draftCapabilities?.length ?? 0
+  const rejectedCount = rejectedCapabilities?.length ?? 0
   const sourceCapabilities = useMemo(
     () => {
+      if (showDataViewToggle && hasRejectedData && dataView === "rejected") {
+        return rejectedCapabilities ?? []
+      }
+
       if (showDataViewToggle && hasDraftData && dataView === "drafts") {
         return draftCapabilities ?? []
       }
@@ -235,7 +245,9 @@ export function CapabilityDashboard({
       dataView,
       draftCapabilities,
       hasDraftData,
+      hasRejectedData,
       hasSecondaryData,
+      rejectedCapabilities,
       secondaryCapabilities,
       showDataViewToggle,
     ]
@@ -322,7 +334,8 @@ export function CapabilityDashboard({
                   placeholder={searchPlaceholder}
                 />
               </label>
-              {showDataViewToggle && (hasSecondaryData || hasDraftData) ? (
+              {showDataViewToggle &&
+              (hasSecondaryData || hasDraftData || hasRejectedData) ? (
                 <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1">
                   <Button
                     type="button"
@@ -365,6 +378,20 @@ export function CapabilityDashboard({
                       <span>{draftsLabel}</span>
                       <Badge variant="secondary" className="min-w-5 px-1.5">
                         {draftsCount}
+                      </Badge>
+                    </Button>
+                  ) : null}
+                  {hasRejectedData ? (
+                    <Button
+                      type="button"
+                      variant={dataView === "rejected" ? "default" : "outline"}
+                      size="sm"
+                      className="h-9 px-3"
+                      onClick={() => setDataView("rejected")}
+                    >
+                      <span>{rejectedLabel}</span>
+                      <Badge variant="secondary" className="min-w-5 px-1.5">
+                        {rejectedCount}
                       </Badge>
                     </Button>
                   ) : null}

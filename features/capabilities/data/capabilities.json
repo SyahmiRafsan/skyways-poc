@@ -274,7 +274,7 @@
     "equipmentTools": [
       "Propeller fixture set"
     ],
-    "status": "WM_REVIEW",
+    "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
     "reviewTrail": [
@@ -301,13 +301,37 @@
         "action": "APPROVE",
         "fromStatus": "QAM_REVIEW",
         "toStatus": "WM_REVIEW"
+      },
+      {
+        "at": "2026-04-09T10:31:48.908Z",
+        "byUserId": "W001",
+        "byRole": "wm",
+        "action": "APPROVE",
+        "fromStatus": "WM_REVIEW",
+        "toStatus": "READY_FOR_SUBMISSION"
+      },
+      {
+        "at": "2026-04-09T10:32:05.539Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_SUBMITTED_TO_AUTHORITY",
+        "fromStatus": "READY_FOR_SUBMISSION",
+        "toStatus": "SUBMITTED_TO_AUTHORITY"
+      },
+      {
+        "at": "2026-04-09T10:33:56.174Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_AUTHORITY_APPROVED",
+        "fromStatus": "SUBMITTED_TO_AUTHORITY",
+        "toStatus": "AUTHORITY_APPROVED"
       }
     ],
-    "currentReviewerRole": "wm"
+    "currentReviewerRole": null
   },
   {
     "id": "12d5fb9f-76d5-4c2d-a728-3fec281bd32e",
-    "referenceNo": "CA/2026/1001",
+    "referenceNo": "CA/2026/1002",
     "aircraft": "Aircraft",
     "aircraftModels": [
       "ATR 42 DHC8-106",
@@ -334,9 +358,9 @@
     "equipmentTools": [
       "Standard propeller balancing kit"
     ],
-    "status": "USER_EDIT_REQUIRED",
+    "status": "SUBMITTED_TO_AUTHORITY",
     "submittedByUserId": "U001",
-    "revision": 0,
+    "revision": 1,
     "reviewTrail": [
       {
         "at": "2026-04-09T10:28:16.261Z",
@@ -362,8 +386,48 @@
         "fromStatus": "QAM_REVIEW",
         "toStatus": "USER_EDIT_REQUIRED",
         "remarks": "waaa"
+      },
+      {
+        "at": "2026-04-09T10:33:14.620Z",
+        "byUserId": "U001",
+        "byRole": "user",
+        "action": "RESUBMIT",
+        "fromStatus": "USER_EDIT_REQUIRED",
+        "toStatus": "TSM_REVIEW"
+      },
+      {
+        "at": "2026-04-09T10:33:46.907Z",
+        "byUserId": "T001",
+        "byRole": "tsm",
+        "action": "APPROVE",
+        "fromStatus": "TSM_REVIEW",
+        "toStatus": "QAM_REVIEW"
+      },
+      {
+        "at": "2026-04-09T10:33:58.938Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "APPROVE",
+        "fromStatus": "QAM_REVIEW",
+        "toStatus": "WM_REVIEW"
+      },
+      {
+        "at": "2026-04-09T10:35:17.322Z",
+        "byUserId": "W001",
+        "byRole": "wm",
+        "action": "APPROVE",
+        "fromStatus": "WM_REVIEW",
+        "toStatus": "READY_FOR_SUBMISSION"
+      },
+      {
+        "at": "2026-04-09T10:35:54.390Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_SUBMITTED_TO_AUTHORITY",
+        "fromStatus": "READY_FOR_SUBMISSION",
+        "toStatus": "SUBMITTED_TO_AUTHORITY"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": "qam"
   }
 ]

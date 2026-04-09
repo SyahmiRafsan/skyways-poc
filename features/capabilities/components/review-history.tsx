@@ -261,8 +261,9 @@ export function ReviewHistory({
                 ) : null}
 
                 {event.remarks ? (
-                  <p className="text-muted-foreground">
-                    Remarks: {event.remarks}
+                  <p className="mt-3 text-muted-foreground">
+                    <span className="text-xs uppercase">Remarks</span>
+                    <br /> {event.remarks}
                   </p>
                 ) : null}
               </li>
