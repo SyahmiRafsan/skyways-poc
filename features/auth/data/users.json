@@ -3,24 +3,28 @@
     "id": "U001",
     "email": "user@skycaplist.test",
     "name": "Demo User",
-    "role": "user"
+    "role": "user",
+    "avatarUrl": "https://i.pravatar.cc/150?img=12"
   },
   {
     "id": "T001",
     "email": "tsm@skycaplist.test",
     "name": "Demo TSM",
-    "role": "tsm"
+    "role": "tsm",
+    "avatarUrl": "https://i.pravatar.cc/150?img=16"
   },
   {
     "id": "Q001",
     "email": "qam@skycaplist.test",
     "name": "Demo QAM",
-    "role": "qam"
+    "role": "qam",
+    "avatarUrl": "https://i.pravatar.cc/150?img=32"
   },
   {
     "id": "W001",
     "email": "wm@skycaplist.test",
     "name": "Demo WM",
-    "role": "wm"
+    "role": "wm",
+    "avatarUrl": "https://i.pravatar.cc/150?img=36"
   }
 ]

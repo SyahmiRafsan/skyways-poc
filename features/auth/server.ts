@@ -45,6 +45,10 @@ export function parseSession(raw: string | undefined): SessionPayload | null {
       email: parsed.email,
       name: parsed.name,
       role: parsed.role,
+      avatarUrl:
+        typeof parsed.avatarUrl === "string" && parsed.avatarUrl
+          ? parsed.avatarUrl
+          : `https://i.pravatar.cc/150?u=${encodeURIComponent(parsed.email)}`,
     }
   } catch {
     return null

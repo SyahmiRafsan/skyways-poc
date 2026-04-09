@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { IconArrowRight } from "@tabler/icons-react"
 import Link from "next/link"
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
@@ -55,14 +56,40 @@ function formatDuration(fromIso: string, toIso: string): string {
   return chunks.join(" ")
 }
 
-function getActionLabel(action: string): string {
-  if (action === "SUBMIT") return "Submitted by"
-  if (action === "RESUBMIT") return "Resubmitted by"
-  if (action === "APPROVE") return "Approved by"
-  if (action === "REJECT") return "Rejected by"
-  if (action === "MARK_SUBMITTED_TO_AUTHORITY") return "Marked submitted by"
-  if (action === "MARK_AUTHORITY_APPROVED") return "Authority approved by"
-  if (action === "MARK_AUTHORITY_REJECTED") return "Authority rejected by"
+function formatReviewTimestamp(value: string): string {
+  const date = new Date(value)
+  if (!Number.isFinite(date.getTime())) {
+    return "-"
+  }
+
+  const parts = new Intl.DateTimeFormat("en-MY", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  }).formatToParts(date)
+
+  const valueByType = new Map(parts.map((part) => [part.type, part.value]))
+  const day = valueByType.get("day") ?? ""
+  const month = valueByType.get("month") ?? ""
+  const year = valueByType.get("year") ?? ""
+  const hour = valueByType.get("hour") ?? ""
+  const minute = valueByType.get("minute") ?? "00"
+  const dayPeriod = (valueByType.get("dayPeriod") ?? "").toUpperCase()
+
+  return `${day} ${month} ${year}, ${hour}:${minute} ${dayPeriod}`.trim()
+}
+
+function getActionLabel(action: string, byRole: string): string {
+  if (action === "MARK_SUBMITTED_TO_AUTHORITY") return "Submitted by"
+  if (action === "REJECT" || action === "MARK_AUTHORITY_REJECTED") {
+    return "Rejected by"
+  }
+  if (byRole === "user") return "Prepared by"
+  if (byRole === "tsm") return "Checked by"
+  if (byRole === "qam" || byRole === "wm") return "Approved by"
   return "Updated by"
 }
 
@@ -77,6 +104,43 @@ function formatStatusLabel(status: string): string {
   if (status === "USER_EDIT_REQUIRED") return "User Edit Required"
   if (status === "DRAFT") return "Draft"
   return status
+}
+
+function UserWithAvatar({
+  name,
+  avatarUrl,
+  muted = false,
+}: {
+  name: string
+  avatarUrl?: string
+  muted?: boolean
+}) {
+  return (
+    <span className="inline-flex items-center gap-2">
+      <Avatar className="size-5">
+        <AvatarImage src={avatarUrl} alt={name} />
+        <AvatarFallback>{name.slice(0, 1).toUpperCase()}</AvatarFallback>
+      </Avatar>
+      <span className={muted ? "text-muted-foreground" : undefined}>
+        {name}
+      </span>
+    </span>
+  )
+}
+
+function UserAvatarOnly({
+  name,
+  avatarUrl,
+}: {
+  name: string
+  avatarUrl?: string
+}) {
+  return (
+    <Avatar className="size-5" title={name}>
+      <AvatarImage src={avatarUrl} alt={name} />
+      <AvatarFallback>{name.slice(0, 1).toUpperCase()}</AvatarFallback>
+    </Avatar>
+  )
 }
 
 export default async function CapabilityDetailPage({ params }: PageProps) {
@@ -127,8 +191,8 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
   const canReview =
     canReviewerAct(capability, session.role) ||
     canQamAuthorityAct(capability, session.role)
-  const userIdToName = new Map(
-    usersData.map((user) => [user.id, user.name] as const)
+  const userIdToUser = new Map(
+    usersData.map((user) => [user.id, user] as const)
   )
   const roleToUser = new Map(
     usersData.map((user) => [user.role, user] as const)
@@ -192,7 +256,13 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                               capability.currentReviewerRole
                             )
                             if (!reviewer) return capability.currentReviewerRole
-                            return `${reviewer.name} (${reviewer.id})`
+                            return (
+                              <UserWithAvatar
+                                name={reviewer.name}
+                                avatarUrl={reviewer.avatarUrl}
+                                muted
+                              />
+                            )
                           })()
                         : "-"}
                     </span>
@@ -201,9 +271,22 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                 <p>
                   <span className="font-medium">Submitted By</span>
                   <span className="mt-1 block text-muted-foreground">
-                    {userIdToName.get(capability.submittedByUserId) ??
-                      capability.submittedByUserId}{" "}
-                    ({capability.submittedByUserId})
+                    {(() => {
+                      const submitter = userIdToUser.get(
+                        capability.submittedByUserId
+                      )
+                      if (!submitter) {
+                        return capability.submittedByUserId
+                      }
+
+                      return (
+                        <UserWithAvatar
+                          name={submitter.name}
+                          avatarUrl={submitter.avatarUrl}
+                          muted
+                        />
+                      )
+                    })()}
                   </span>
                 </p>
               </div>
@@ -256,22 +339,36 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                         className="rounded-md border border-border p-3"
                       >
                         <div className="flex items-start justify-between gap-4">
-                          <p>
-                            <span className="font-medium">
-                              {getActionLabel(event.action)}
+                          <p className="inline-flex items-center gap-2 whitespace-nowrap">
+                            <span className="text-xs font-medium uppercase">
+                              {getActionLabel(event.action, event.byRole)}
                             </span>{" "}
-                            {userIdToName.get(event.byUserId) ?? event.byUserId}
+                            {(() => {
+                              const actor = userIdToUser.get(event.byUserId)
+                              if (!actor) return event.byUserId
+
+                              return (
+                                <UserAvatarOnly
+                                  name={actor.name}
+                                  avatarUrl={actor.avatarUrl}
+                                />
+                              )
+                            })()}
                           </p>
-                          {showDuration ? (
+                          {/*{showDuration ? (
                             <span className="text-xs text-muted-foreground">
                               {sincePrevious}
                             </span>
-                          ) : null}
+                          ) : null}*/}
+                          <p className="text-xs text-muted-foreground">
+                            {formatReviewTimestamp(event.at)}
+                          </p>
                         </div>
-                        <div className="my-2 flex flex-wrap items-center gap-2 text-muted-foreground">
+
+                        <div className="mt-2 flex flex-wrap items-center gap-2 text-muted-foreground">
                           <Badge
                             variant="secondary"
-                            className="max-w-32 justify-start"
+                            className="max-w-34 justify-start lg:max-w-36"
                           >
                             <span
                               className="block w-full truncate text-left"
@@ -283,7 +380,7 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                           <IconArrowRight size={14} className="shrink-0" />
                           <Badge
                             variant="secondary"
-                            className="max-w-32 justify-start"
+                            className="max-w-34 justify-start lg:max-w-36"
                           >
                             <span
                               className="block w-full truncate text-left"
@@ -293,9 +390,6 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                             </span>
                           </Badge>
                         </div>
-                        <p className="mt-1 text-muted-foreground">
-                          {new Date(event.at).toLocaleString()}
-                        </p>
                         {event.remarks ? (
                           <p className="text-muted-foreground">
                             Remarks: {event.remarks}
@@ -339,16 +433,31 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                       capability.currentReviewerRole
                     )
                     if (!reviewer) return capability.currentReviewerRole
-                    return `${reviewer.name} (${reviewer.id})`
+                    return (
+                      <UserWithAvatar
+                        name={reviewer.name}
+                        avatarUrl={reviewer.avatarUrl}
+                      />
+                    )
                   })()
                 : "-"}
             </p>
           ) : null}
           <p>
             <span className="font-medium">Submitted By:</span>{" "}
-            {userIdToName.get(capability.submittedByUserId) ??
-              capability.submittedByUserId}{" "}
-            ({capability.submittedByUserId})
+            {(() => {
+              const submitter = userIdToUser.get(capability.submittedByUserId)
+              if (!submitter) {
+                return capability.submittedByUserId
+              }
+
+              return (
+                <UserWithAvatar
+                  name={submitter.name}
+                  avatarUrl={submitter.avatarUrl}
+                />
+              )
+            })()}
           </p>
         </CardContent>
       </Card>
@@ -400,11 +509,21 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                     className="rounded-md border border-border p-3"
                   >
                     <div className="flex items-start justify-between gap-4">
-                      <p>
+                      <p className="inline-flex items-center gap-2 whitespace-nowrap">
                         <span className="font-medium">
-                          {getActionLabel(event.action)}
+                          {getActionLabel(event.action, event.byRole)}
                         </span>{" "}
-                        {userIdToName.get(event.byUserId) ?? event.byUserId}
+                        {(() => {
+                          const actor = userIdToUser.get(event.byUserId)
+                          if (!actor) return event.byUserId
+
+                          return (
+                            <UserAvatarOnly
+                              name={actor.name}
+                              avatarUrl={actor.avatarUrl}
+                            />
+                          )
+                        })()}
                       </p>
                       {showDuration ? (
                         <span className="text-xs text-muted-foreground">
@@ -440,7 +559,7 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
                       </Badge>
                     </div>
                     <p className="mt-1 text-muted-foreground">
-                      {new Date(event.at).toLocaleString()}
+                      {formatReviewTimestamp(event.at)}
                     </p>
                     {event.remarks ? (
                       <p className="text-muted-foreground">

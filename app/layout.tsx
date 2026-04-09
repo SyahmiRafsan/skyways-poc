@@ -53,9 +53,7 @@ export default async function RootLayout({
   const myPendingCount = session
     ? getPendingApprovalsForRole(await readCapabilities(), session.role).length
     : 0
-  const avatarSrc = session
-    ? `https://i.pravatar.cc/150?u=${encodeURIComponent(session.email)}`
-    : null
+  const avatarSrc = session ? session.avatarUrl : null
   const avatarFallback = session?.name?.slice(0, 1).toUpperCase() ?? "U"
 
   return (
