@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Command,
@@ -35,12 +36,17 @@ import type {
 type CapabilityDashboardProps = {
   approvals: AuthorityApproval[]
   capabilities: Capability[]
+  secondaryCapabilities?: Capability[]
   title?: string
   countLabel?: string
   searchPlaceholder?: string
   showHeader?: boolean
   showSearch?: boolean
   showApprovalsCards?: boolean
+  showDataViewToggle?: boolean
+  defaultDataView?: "primary" | "secondary"
+  primaryLabel?: string
+  secondaryLabel?: string
 }
 
 type DashboardRow = {
@@ -185,18 +191,45 @@ function FilterCombobox({
 export function CapabilityDashboard({
   approvals,
   capabilities,
+  secondaryCapabilities,
   title = "Capability List Management",
   countLabel = "Total Capabilities",
   searchPlaceholder = "Search by caplist, PN, OEM, Aircraft Type",
   showHeader = true,
   showSearch = true,
   showApprovalsCards = true,
+  showDataViewToggle = false,
+  defaultDataView = "primary",
+  primaryLabel = "Primary",
+  secondaryLabel = "Secondary",
 }: CapabilityDashboardProps) {
   const [query, setQuery] = useState("")
+  const [dataView, setDataView] = useState<"primary" | "secondary">(
+    defaultDataView
+  )
   const [filters, setFilters] =
     useState<Record<ColumnKey, string>>(createInitialFilters)
+  const hasSecondaryData = Boolean(secondaryCapabilities)
+  const primaryCount = capabilities.length
+  const secondaryCount = secondaryCapabilities?.length ?? 0
+  const sourceCapabilities = useMemo(
+    () =>
+      showDataViewToggle && hasSecondaryData && dataView === "secondary"
+        ? (secondaryCapabilities ?? [])
+        : capabilities,
+    [
+      capabilities,
+      dataView,
+      hasSecondaryData,
+      secondaryCapabilities,
+      showDataViewToggle,
+    ]
+  )
 
-  const rows = useMemo(() => capabilities.map(mapCapabilityToRow), [capabilities])
+  const rows = useMemo(
+    () => sourceCapabilities.map(mapCapabilityToRow),
+    [sourceCapabilities]
+  )
 
   const filterOptions = useMemo(() => {
     return columnConfigs.reduce(
@@ -274,6 +307,44 @@ export function CapabilityDashboard({
                   placeholder={searchPlaceholder}
                 />
               </label>
+              {showDataViewToggle && hasSecondaryData ? (
+                <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1">
+                  <Button
+                    type="button"
+                    variant={dataView === "primary" ? "default" : "outline"}
+                    size="sm"
+                    className="h-9 px-3"
+                    onClick={() => setDataView("primary")}
+                  >
+                    <span>{primaryLabel}</span>
+                    {primaryCount > 0 ? (
+                      <Badge
+                        variant="secondary"
+                        className="min-w-5 px-1.5 tabular-nums"
+                      >
+                        {primaryCount}
+                      </Badge>
+                    ) : null}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={dataView === "secondary" ? "default" : "outline"}
+                    size="sm"
+                    className="h-9 px-3"
+                    onClick={() => setDataView("secondary")}
+                  >
+                    <span>{secondaryLabel}</span>
+                    {secondaryCount > 0 ? (
+                      <Badge
+                        variant="secondary"
+                        className="min-w-5 px-1.5 tabular-nums"
+                      >
+                        {secondaryCount}
+                      </Badge>
+                    ) : null}
+                  </Button>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </section>

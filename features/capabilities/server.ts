@@ -20,6 +20,14 @@ import type {
 } from "@/features/capabilities/types"
 
 const CAPABILITY_FILE_PATH = path.join(process.cwd(), CAPABILITY_DATA_FILE)
+const PENDING_APPROVAL_STATUSES = new Set<CapabilityStatus>([
+  "TSM_REVIEW",
+  "QAM_REVIEW",
+  "WM_REVIEW",
+  "READY_FOR_SUBMISSION",
+  "SUBMITTED_TO_AUTHORITY",
+  "AUTHORITY_REJECTED",
+])
 
 type ValidationResult =
   | {
@@ -216,6 +224,29 @@ export function canQamAuthorityAct(capability: Capability, role: Role): boolean 
   }
 
   return QAM_AUTHORITY_ACTION_STATUSES.includes(capability.status)
+}
+
+export function isCapabilityPendingApproval(capability: Capability): boolean {
+  return PENDING_APPROVAL_STATUSES.has(capability.status)
+}
+
+export function canRoleApproveCapability(capability: Capability, role: Role): boolean {
+  if (!isCapabilityPendingApproval(capability)) {
+    return false
+  }
+
+  if (role === "user") {
+    return false
+  }
+
+  return canReviewerAct(capability, role) || canQamAuthorityAct(capability, role)
+}
+
+export function getPendingApprovalsForRole(
+  capabilities: Capability[],
+  role: Role
+): Capability[] {
+  return capabilities.filter((capability) => canRoleApproveCapability(capability, role))
 }
 
 export function generateReferenceNo(capabilities: Capability[], now: Date = new Date()): string {

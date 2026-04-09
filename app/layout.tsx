@@ -13,8 +13,13 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggleButton } from "@/components/theme-toggle-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { logoutAction } from "@/features/auth/actions"
 import { getSessionFromCookieStore } from "@/features/auth/session"
+import {
+  getPendingApprovalsForRole,
+  readCapabilities,
+} from "@/features/capabilities/server"
 import { cn } from "@/lib/utils"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
@@ -37,6 +42,9 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   const session = await getSessionFromCookieStore()
+  const myPendingCount = session
+    ? getPendingApprovalsForRole(await readCapabilities(), session.role).length
+    : 0
   const avatarSrc = session
     ? `https://i.pravatar.cc/150?u=${encodeURIComponent(session.email)}`
     : null
@@ -101,7 +109,10 @@ export default async function RootLayout({
                           href="/capabilities/new"
                           className="inline-flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm text-foreground transition-colors hover:bg-muted"
                         >
-                          <IconPlus size={16} className="text-muted-foreground" />
+                          <IconPlus
+                            size={16}
+                            className="text-muted-foreground"
+                          />
                           Register PN
                         </Link>
                       </div>
@@ -109,9 +120,14 @@ export default async function RootLayout({
 
                     <Link
                       href="/approvals"
-                      className="rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                      className="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
                     >
                       Approvals
+                      {myPendingCount > 0 ? (
+                        <Badge className="min-w-5 px-1.5 tabular-nums">
+                          {myPendingCount}
+                        </Badge>
+                      ) : null}
                     </Link>
                   </nav>
 

@@ -187,7 +187,7 @@ export function CapabilityForm({
   const form = useForm<CapabilityFormInput>({
     resolver: zodResolver(capabilityFormSchema),
     defaultValues: toDefaultValues(values),
-    mode: "onBlur",
+    mode: "onSubmit",
   })
 
   useEffect(() => {
