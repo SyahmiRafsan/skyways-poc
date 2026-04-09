@@ -366,7 +366,7 @@ export function CapabilityDashboard({
               </label>
               {showDataViewToggle &&
               (hasSecondaryData || hasDraftData || hasRejectedData) ? (
-                <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1">
+                <div className="flex flex-wrap items-center gap-1 rounded-md border border-border bg-background p-1">
                   {showPrimaryDataViewToggle ? (
                     <Button
                       type="button"

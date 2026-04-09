@@ -3,6 +3,7 @@ import {
   IconChevronDown,
   IconListDetails,
   IconLogout,
+  IconMenu2,
   IconPlus,
 } from "@tabler/icons-react"
 import { Geist_Mono, Inter } from "next/font/google"
@@ -82,17 +83,20 @@ export default async function RootLayout({
         <ThemeProvider>
           <div className="mx-auto flex min-h-svh w-full max-w-7xl flex-col">
             {session ? (
-              <header className="flex items-center justify-between px-6 py-3">
-                <div className="flex items-center bg-[#051f44] p-3">
+              <header className="flex items-center justify-between px-4 py-3 md:px-6">
+                <Link
+                  href="/"
+                  className="flex items-center bg-[#051f44] p-2 md:p-3"
+                >
                   <img
                     src="/logo-skyways.webp"
                     alt="Skyways"
-                    className="h-4 w-auto"
+                    className="h-3 w-auto md:h-4"
                   />
-                </div>
+                </Link>
 
                 <div className="flex items-center gap-2">
-                  <nav className="flex items-center gap-1">
+                  <nav className="hidden items-center gap-1 md:flex">
                     <Link
                       href="/"
                       className="rounded-md px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
@@ -160,6 +164,54 @@ export default async function RootLayout({
                     <DropdownMenuTrigger
                       render={
                         <Button
+                          variant="ghost"
+                          size="icon-sm"
+                          className="rounded-md md:hidden"
+                        />
+                      }
+                    >
+                      <IconMenu2 size={18} className="text-foreground" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      align="end"
+                      className="w-52 rounded-md border border-border bg-popover p-1 shadow-md md:hidden"
+                    >
+                      <DropdownMenuItem
+                        render={<Link href="/" />}
+                        className="rounded-md px-2 py-2"
+                      >
+                        Dashboard
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        render={<Link href="/capabilities" />}
+                        className="rounded-md px-2 py-2"
+                      >
+                        Capabilities
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        render={<Link href="/capabilities/new" />}
+                        className="rounded-md px-2 py-2"
+                      >
+                        Register PN
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        render={<Link href="/approvals" />}
+                        className="rounded-md px-2 py-2"
+                      >
+                        <span>Approvals</span>
+                        {myPendingCount > 0 ? (
+                          <Badge className="ml-auto min-w-5 px-1.5">
+                            {myPendingCount}
+                          </Badge>
+                        ) : null}
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <Button
                           variant="outline"
                           size="sm"
                           className="h-auto gap-2 rounded-md px-3 py-2 text-sm font-medium text-foreground"
@@ -173,7 +225,7 @@ export default async function RootLayout({
                         />
                         <AvatarFallback>{avatarFallback}</AvatarFallback>
                       </Avatar>
-                      <span>{session.name}</span>
+                      <span className="hidden sm:inline">{session.name}</span>
                       <IconChevronDown
                         size={16}
                         className="text-muted-foreground"
