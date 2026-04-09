@@ -47,8 +47,8 @@ export default async function ApprovalsPage() {
       title="Approvals"
       countLabel="Pending Approvals"
       showDataViewToggle
-      primaryLabel="My approvals"
-      secondaryLabel="Pending"
+      primaryLabel="My Approvals"
+      secondaryLabel="Pending Approvals"
       draftsLabel="Drafts"
       rejectedLabel="Rejected"
       defaultDataView="primary"

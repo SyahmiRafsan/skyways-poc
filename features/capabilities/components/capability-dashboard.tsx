@@ -309,6 +309,34 @@ export function CapabilityDashboard({
     })
   }, [filters, query, rows])
 
+  const activeCountLabel = useMemo(() => {
+    if (!showDataViewToggle) {
+      return countLabel
+    }
+
+    if (dataView === "secondary") {
+      return secondaryLabel
+    }
+
+    if (dataView === "drafts") {
+      return draftsLabel
+    }
+
+    if (dataView === "rejected") {
+      return rejectedLabel
+    }
+
+    return primaryLabel
+  }, [
+    countLabel,
+    dataView,
+    draftsLabel,
+    primaryLabel,
+    rejectedLabel,
+    secondaryLabel,
+    showDataViewToggle,
+  ])
+
   return (
     <div className="space-y-8 px-4 py-8 md:px-6 md:py-10">
       {showHeader ? (
@@ -316,7 +344,7 @@ export function CapabilityDashboard({
           <div className="space-y-1">
             <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
             <p className="text-lg font-medium text-muted-foreground">
-              {countLabel}: {filteredRows.length}
+              {activeCountLabel}: {filteredRows.length}
             </p>
           </div>
 
@@ -376,9 +404,11 @@ export function CapabilityDashboard({
                       onClick={() => setDataView("drafts")}
                     >
                       <span>{draftsLabel}</span>
-                      <Badge variant="secondary" className="min-w-5 px-1.5">
-                        {draftsCount}
-                      </Badge>
+                      {draftsCount > 0 ? (
+                        <Badge variant="secondary" className="min-w-5 px-1.5">
+                          {draftsCount}
+                        </Badge>
+                      ) : null}
                     </Button>
                   ) : null}
                   {hasRejectedData ? (
@@ -390,9 +420,11 @@ export function CapabilityDashboard({
                       onClick={() => setDataView("rejected")}
                     >
                       <span>{rejectedLabel}</span>
-                      <Badge variant="secondary" className="min-w-5 px-1.5">
-                        {rejectedCount}
-                      </Badge>
+                      {rejectedCount > 0 ? (
+                        <Badge variant="secondary" className="min-w-5 px-1.5">
+                          {rejectedCount}
+                        </Badge>
+                      ) : null}
                     </Button>
                   ) : null}
                 </div>
