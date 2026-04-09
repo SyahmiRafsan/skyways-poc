@@ -49,6 +49,32 @@ export type CapabilityReviewEvent = {
 
 export type CapabilityAircraftType = "Aircraft" | "Engine"
 
+export type CapabilityRevisionSnapshotPayload = {
+  aircraft: CapabilityAircraftType
+  aircraftModels: string[]
+  manufacturer: string
+  rating: string
+  ataChapter: number
+  partDesignationDesc: string
+  category: string
+  partNumberSeries: string
+  partNumberModelNos: string[]
+  locations: CapabilityLocations
+  maintenanceReferences: string[]
+  equipmentTools: string[]
+}
+
+export type CapabilityRevisionSnapshotTrigger = "MIGRATION_BASELINE" | "RESUBMIT"
+
+export type CapabilityRevisionSnapshot = {
+  revision: number
+  capturedAt: string
+  capturedByUserId: string
+  trigger: CapabilityRevisionSnapshotTrigger
+  referenceNo: string
+  payload: CapabilityRevisionSnapshotPayload
+}
+
 export type Capability = {
   id: string
   referenceNo: string
@@ -68,6 +94,7 @@ export type Capability = {
   submittedByUserId: string
   revision: number
   reviewTrail: CapabilityReviewEvent[]
+  revisionHistory: CapabilityRevisionSnapshot[]
   currentReviewerRole: ReviewerRole | null
 }
 

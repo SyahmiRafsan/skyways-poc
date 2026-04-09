@@ -15,7 +15,7 @@ import {
   updateCapabilityAction,
 } from "@/features/capabilities/actions"
 import { CapabilityForm } from "@/features/capabilities/components/capability-form"
-import { ReviewHistory } from "@/features/capabilities/components/review-history"
+import { HistoryTabs } from "@/features/capabilities/components/history-tabs"
 import { CapabilityView } from "@/features/capabilities/components/capability-view"
 import { ReviewPanel } from "@/features/capabilities/components/review-panel"
 import {
@@ -255,10 +255,10 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
             </Card>
           )}
 
-          <ReviewHistory
-            events={capability.reviewTrail}
+          <HistoryTabs
+            reviewEvents={capability.reviewTrail}
+            revisionSnapshots={capability.revisionHistory}
             users={usersData}
-            variant="sidebar"
           />
         </div>
       </section>

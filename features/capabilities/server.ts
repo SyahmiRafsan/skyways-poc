@@ -14,6 +14,9 @@ import type {
   CapabilityAction,
   CapabilityFormValues,
   CapabilityLocations,
+  CapabilityRevisionSnapshot,
+  CapabilityRevisionSnapshotPayload,
+  CapabilityRevisionSnapshotTrigger,
   CapabilityReviewEvent,
   CapabilityStatus,
   ReviewerRole,
@@ -49,6 +52,22 @@ type ValidationResult =
       }
     }
   | { ok: false; error: string }
+
+type CapabilityCoreFields = {
+  referenceNo: string
+  aircraft: CapabilityAircraftType
+  aircraftModels: string[]
+  manufacturer: string
+  rating: string
+  ataChapter: number
+  partDesignationDesc: string
+  category: string
+  partNumberSeries: string
+  partNumberModelNos: string[]
+  locations: CapabilityLocations
+  maintenanceReferences: string[]
+  equipmentTools: string[]
+}
 
 export function splitMultilineLines(value: string): string[] {
   return value
@@ -167,7 +186,8 @@ export function validateCapabilityFormValues(values: CapabilityFormValues): Vali
 
 export async function readCapabilities(): Promise<Capability[]> {
   const raw = await readFile(CAPABILITY_FILE_PATH, "utf8")
-  return JSON.parse(raw) as Capability[]
+  const parsed = JSON.parse(raw) as Capability[]
+  return parsed.map(normalizeCapability)
 }
 
 export async function writeCapabilities(capabilities: Capability[]): Promise<void> {
@@ -181,6 +201,92 @@ export async function writeCapabilities(capabilities: Capability[]): Promise<voi
 export async function findCapabilityById(id: string): Promise<Capability | null> {
   const capabilities = await readCapabilities()
   return capabilities.find((capability) => capability.id === id) ?? null
+}
+
+export function normalizeCapability(capability: Capability): Capability {
+  return {
+    ...capability,
+    revisionHistory: Array.isArray(capability.revisionHistory)
+      ? capability.revisionHistory
+      : [],
+  }
+}
+
+export function toRevisionSnapshotPayload(
+  capability: Capability | CapabilityCoreFields
+): CapabilityRevisionSnapshotPayload {
+  return {
+    aircraft: capability.aircraft,
+    aircraftModels: [...capability.aircraftModels],
+    manufacturer: capability.manufacturer,
+    rating: capability.rating,
+    ataChapter: capability.ataChapter,
+    partDesignationDesc: capability.partDesignationDesc,
+    category: capability.category,
+    partNumberSeries: capability.partNumberSeries,
+    partNumberModelNos: [...capability.partNumberModelNos],
+    locations: { ...capability.locations },
+    maintenanceReferences: [...capability.maintenanceReferences],
+    equipmentTools: [...capability.equipmentTools],
+  }
+}
+
+export function toRevisionSnapshot(
+  capability: Capability,
+  input: {
+    capturedByUserId: string
+    trigger: CapabilityRevisionSnapshotTrigger
+    capturedAt?: string
+  }
+): CapabilityRevisionSnapshot {
+  return {
+    revision: capability.revision,
+    capturedAt: input.capturedAt ?? new Date().toISOString(),
+    capturedByUserId: input.capturedByUserId,
+    trigger: input.trigger,
+    referenceNo: capability.referenceNo,
+    payload: toRevisionSnapshotPayload(capability),
+  }
+}
+
+export function appendRevisionSnapshot(
+  capability: Capability,
+  snapshot: CapabilityRevisionSnapshot
+): Capability {
+  return {
+    ...capability,
+    revisionHistory: [...capability.revisionHistory, snapshot],
+  }
+}
+
+export function createDraftCapability(
+  input: CapabilityCoreFields & {
+    id: string
+    submittedByUserId: string
+  }
+): Capability {
+  return {
+    id: input.id,
+    referenceNo: input.referenceNo,
+    aircraft: input.aircraft,
+    aircraftModels: input.aircraftModels,
+    manufacturer: input.manufacturer,
+    rating: input.rating,
+    ataChapter: input.ataChapter,
+    partDesignationDesc: input.partDesignationDesc,
+    category: input.category,
+    partNumberSeries: input.partNumberSeries,
+    partNumberModelNos: input.partNumberModelNos,
+    locations: input.locations,
+    maintenanceReferences: input.maintenanceReferences,
+    equipmentTools: input.equipmentTools,
+    status: "DRAFT",
+    submittedByUserId: input.submittedByUserId,
+    revision: 0,
+    reviewTrail: [],
+    revisionHistory: [],
+    currentReviewerRole: null,
+  }
 }
 
 export function statusForReviewer(role: ReviewerRole): CapabilityStatus {
@@ -295,6 +401,47 @@ export function appendReviewEvent(
     ...capability,
     reviewTrail: [...capability.reviewTrail, event],
   }
+}
+
+export function transitionCapabilityToSubmitted(
+  input: {
+    capability: Capability
+    capabilities: Capability[]
+    byUserId: string
+    now?: Date
+  }
+): Capability {
+  const fromStatus = input.capability.status
+  const isResubmit = fromStatus === "USER_EDIT_REQUIRED"
+  const nextReferenceNo = isResubmit
+    ? generateReferenceNo(input.capabilities, input.now)
+    : input.capability.referenceNo
+
+  let next: Capability = {
+    ...input.capability,
+    referenceNo: nextReferenceNo,
+    status: "TSM_REVIEW",
+    currentReviewerRole: "tsm",
+    revision: isResubmit ? input.capability.revision + 1 : input.capability.revision,
+  }
+
+  if (isResubmit) {
+    next = appendRevisionSnapshot(
+      next,
+      toRevisionSnapshot(next, {
+        capturedByUserId: input.byUserId,
+        trigger: "RESUBMIT",
+      })
+    )
+  }
+
+  return appendReviewEvent(next, {
+    byUserId: input.byUserId,
+    byRole: "user",
+    action: isResubmit ? "RESUBMIT" : "SUBMIT",
+    fromStatus,
+    toStatus: "TSM_REVIEW",
+  })
 }
 
 export function toMultilineText(lines: string[]): string {

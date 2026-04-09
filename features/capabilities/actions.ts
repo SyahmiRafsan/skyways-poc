@@ -11,10 +11,11 @@ import {
   canQamAuthorityAct,
   canReviewerAct,
   canUserEditCapability,
+  createDraftCapability,
   extractFormValues,
-  generateReferenceNo,
   nextStatusForReviewer,
   readCapabilities,
+  transitionCapabilityToSubmitted,
   validateCapabilityFormValues,
   writeCapabilities,
 } from "@/features/capabilities/server"
@@ -81,25 +82,11 @@ export async function createCapabilityAction(
   }
 
   const created: Capability = {
-    id: randomUUID(),
-    referenceNo: validated.value.referenceNo,
-    aircraft: validated.value.aircraft,
-    aircraftModels: validated.value.aircraftModels,
-    manufacturer: validated.value.manufacturer,
-    rating: validated.value.rating,
-    ataChapter: validated.value.ataChapter,
-    partDesignationDesc: validated.value.partDesignationDesc,
-    category: validated.value.category,
-    partNumberSeries: validated.value.partNumberSeries,
-    partNumberModelNos: validated.value.partNumberModelNos,
-    locations: validated.value.locations,
-    maintenanceReferences: validated.value.maintenanceReferences,
-    equipmentTools: validated.value.equipmentTools,
-    status: "DRAFT",
-    submittedByUserId: session.id,
-    revision: 0,
-    reviewTrail: [],
-    currentReviewerRole: null,
+    ...createDraftCapability({
+      id: randomUUID(),
+      submittedByUserId: session.id,
+      ...validated.value,
+    }),
   }
 
   capabilities.push(created)
@@ -201,26 +188,10 @@ export async function submitCapabilityAction(
     return { ok: false, error: validationError }
   }
 
-  const fromStatus = current.status
-  const isResubmit = fromStatus === "USER_EDIT_REQUIRED"
-  const nextReferenceNo = isResubmit
-    ? generateReferenceNo(capabilities)
-    : current.referenceNo
-
-  let next: Capability = {
-    ...current,
-    referenceNo: nextReferenceNo,
-    status: "TSM_REVIEW",
-    currentReviewerRole: "tsm",
-    revision: isResubmit ? current.revision + 1 : current.revision,
-  }
-
-  next = appendReviewEvent(next, {
+  const next = transitionCapabilityToSubmitted({
+    capability: current,
+    capabilities,
     byUserId: session.id,
-    byRole: session.role,
-    action: isResubmit ? "RESUBMIT" : "SUBMIT",
-    fromStatus,
-    toStatus: "TSM_REVIEW",
   })
 
   capabilities[index] = next

@@ -79,7 +79,42 @@
         "toStatus": "AUTHORITY_APPROVED"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": null,
+    "revisionHistory": [
+      {
+        "revision": 0,
+        "capturedAt": "2026-04-09T11:52:28.868Z",
+        "capturedByUserId": "U001",
+        "trigger": "MIGRATION_BASELINE",
+        "referenceNo": "CA/2025/1199",
+        "payload": {
+          "aircraft": "Aircraft",
+          "aircraftModels": [
+            "ATR 42 DHC8-100"
+          ],
+          "manufacturer": "HAMILTON SUNDSTRAND",
+          "rating": "C16",
+          "ataChapter": 61,
+          "partDesignationDesc": "PROPELLER SPINNER",
+          "category": "PROPELLERS",
+          "partNumberSeries": "790176",
+          "partNumberModelNos": [
+            "790176-1"
+          ],
+          "locations": {
+            "dkSgd": true,
+            "dkBll": true,
+            "myKul": true
+          },
+          "maintenanceReferences": [
+            "CMM 61-13-02"
+          ],
+          "equipmentTools": [
+            "Standard propeller balancing kit"
+          ]
+        }
+      }
+    ]
   },
   {
     "id": "cap-002",
@@ -162,7 +197,43 @@
         "toStatus": "AUTHORITY_APPROVED"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": null,
+    "revisionHistory": [
+      {
+        "revision": 0,
+        "capturedAt": "2026-04-09T11:52:28.868Z",
+        "capturedByUserId": "U001",
+        "trigger": "MIGRATION_BASELINE",
+        "referenceNo": "CA/2025/1200",
+        "payload": {
+          "aircraft": "Aircraft",
+          "aircraftModels": [
+            "ATR 42 DHC8-100"
+          ],
+          "manufacturer": "HAMILTON SUNDSTRAND",
+          "rating": "C16",
+          "ataChapter": 61,
+          "partDesignationDesc": "VARIABLE PITCH AIRCRAFT PROPELLER",
+          "category": "PROPELLERS",
+          "partNumberSeries": "792000",
+          "partNumberModelNos": [
+            "792000-X"
+          ],
+          "locations": {
+            "dkSgd": true,
+            "dkBll": true,
+            "myKul": true
+          },
+          "maintenanceReferences": [
+            "CMM 61-13-02"
+          ],
+          "equipmentTools": [
+            "Propeller fixture set",
+            "Dynamic balancing analyzer"
+          ]
+        }
+      }
+    ]
   },
   {
     "id": "cap-003",
@@ -244,7 +315,42 @@
         "toStatus": "AUTHORITY_APPROVED"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": null,
+    "revisionHistory": [
+      {
+        "revision": 0,
+        "capturedAt": "2026-04-09T11:52:28.868Z",
+        "capturedByUserId": "U001",
+        "trigger": "MIGRATION_BASELINE",
+        "referenceNo": "CA/2025/1201",
+        "payload": {
+          "aircraft": "Aircraft",
+          "aircraftModels": [
+            "A320 FAMILY"
+          ],
+          "manufacturer": "SAFRAN",
+          "rating": "C14",
+          "ataChapter": 32,
+          "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
+          "category": "LANDING GEAR",
+          "partNumberSeries": "D51785",
+          "partNumberModelNos": [
+            "D51785-12"
+          ],
+          "locations": {
+            "dkSgd": true,
+            "dkBll": false,
+            "myKul": true
+          },
+          "maintenanceReferences": [
+            "CMM 32-45-11"
+          ],
+          "equipmentTools": [
+            "Hydraulic pressure test bench"
+          ]
+        }
+      }
+    ]
   },
   {
     "id": "88a6aaae-7678-4836-82a9-46a31fce834f",
@@ -327,7 +433,43 @@
         "toStatus": "AUTHORITY_APPROVED"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": null,
+    "revisionHistory": [
+      {
+        "revision": 0,
+        "capturedAt": "2026-04-09T11:52:28.868Z",
+        "capturedByUserId": "U001",
+        "trigger": "MIGRATION_BASELINE",
+        "referenceNo": "CA/2026/1000",
+        "payload": {
+          "aircraft": "Aircraft",
+          "aircraftModels": [
+            "A326 FAMILY",
+            "ATR 42 DHC8-102"
+          ],
+          "manufacturer": "SAFRAN",
+          "rating": "C14",
+          "ataChapter": 33,
+          "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
+          "category": "LANDING GEAR",
+          "partNumberSeries": "D51789",
+          "partNumberModelNos": [
+            "D51789-20P"
+          ],
+          "locations": {
+            "dkSgd": true,
+            "dkBll": false,
+            "myKul": false
+          },
+          "maintenanceReferences": [
+            "CMM 61-13-3"
+          ],
+          "equipmentTools": [
+            "Propeller fixture set"
+          ]
+        }
+      }
+    ]
   },
   {
     "id": "12d5fb9f-76d5-4c2d-a728-3fec281bd32e",
@@ -385,7 +527,7 @@
         "action": "REJECT",
         "fromStatus": "QAM_REVIEW",
         "toStatus": "USER_EDIT_REQUIRED",
-        "remarks": "waaa"
+        "remarks": "Reject for now: maintenance reference is incomplete and tooling list does not show actuator alignment fixture. Please update CMM section and attach required tooling details before resubmission."
       },
       {
         "at": "2026-04-09T10:33:14.620Z",
@@ -436,18 +578,55 @@
         "toStatus": "AUTHORITY_APPROVED"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": null,
+    "revisionHistory": [
+      {
+        "revision": 1,
+        "capturedAt": "2026-04-09T11:52:28.868Z",
+        "capturedByUserId": "U001",
+        "trigger": "MIGRATION_BASELINE",
+        "referenceNo": "CA/2026/1001",
+        "payload": {
+          "aircraft": "Aircraft",
+          "aircraftModels": [
+            "ATR 42 DHC8-106",
+            "A331 FAMILY"
+          ],
+          "manufacturer": "SAFRAN",
+          "rating": "C14",
+          "ataChapter": 62,
+          "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
+          "category": "LANDING GEAR",
+          "partNumberSeries": "D51790",
+          "partNumberModelNos": [
+            "D51790-S",
+            "D51790-87"
+          ],
+          "locations": {
+            "dkSgd": false,
+            "dkBll": false,
+            "myKul": true
+          },
+          "maintenanceReferences": [
+            "CMM 61-13-3"
+          ],
+          "equipmentTools": [
+            "Standard propeller balancing kit"
+          ]
+        }
+      }
+    ]
   },
   {
     "id": "bef555f6-908a-442b-b324-81b6c7abcd46",
-    "referenceNo": "CA/2026/1002",
+    "referenceNo": "CA/2026/1004",
     "aircraft": "Aircraft",
     "aircraftModels": [
       "ATR 42 DHC8-109",
       "ATR 42 DHC8-103"
     ],
     "manufacturer": "SAFRAN",
-    "rating": "C14",
+    "rating": "C16",
     "ataChapter": 60,
     "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
     "category": "LANDING GEAR",
@@ -457,8 +636,8 @@
       "D51791-40"
     ],
     "locations": {
-      "dkSgd": false,
-      "dkBll": false,
+      "dkSgd": true,
+      "dkBll": true,
       "myKul": true
     },
     "maintenanceReferences": [
@@ -468,9 +647,9 @@
     "equipmentTools": [
       "Propeller fixture set"
     ],
-    "status": "USER_EDIT_REQUIRED",
+    "status": "TSM_REVIEW",
     "submittedByUserId": "U001",
-    "revision": 0,
+    "revision": 2,
     "reviewTrail": [
       {
         "at": "2026-04-09T11:39:21.125Z",
@@ -487,9 +666,108 @@
         "action": "REJECT",
         "fromStatus": "TSM_REVIEW",
         "toStatus": "USER_EDIT_REQUIRED",
-        "remarks": "a"
+        "remarks": "Please correct aircraft model mapping and provide full part number traceability for D51791-C and D51791-40. Current submission does not meet review checklist."
+      },
+      {
+        "at": "2026-04-09T11:42:05.316Z",
+        "byUserId": "U001",
+        "byRole": "user",
+        "action": "RESUBMIT",
+        "fromStatus": "USER_EDIT_REQUIRED",
+        "toStatus": "TSM_REVIEW"
+      },
+      {
+        "at": "2026-04-09T11:54:04.435Z",
+        "byUserId": "T001",
+        "byRole": "tsm",
+        "action": "REJECT",
+        "fromStatus": "TSM_REVIEW",
+        "toStatus": "USER_EDIT_REQUIRED",
+        "remarks": "Please resubmit properly (DEMO)"
+      },
+      {
+        "at": "2026-04-09T11:54:37.440Z",
+        "byUserId": "U001",
+        "byRole": "user",
+        "action": "RESUBMIT",
+        "fromStatus": "USER_EDIT_REQUIRED",
+        "toStatus": "TSM_REVIEW"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": "tsm",
+    "revisionHistory": [
+      {
+        "revision": 1,
+        "capturedAt": "2026-04-09T11:52:28.868Z",
+        "capturedByUserId": "U001",
+        "trigger": "MIGRATION_BASELINE",
+        "referenceNo": "CA/2026/1003",
+        "payload": {
+          "aircraft": "Aircraft",
+          "aircraftModels": [
+            "ATR 42 DHC8-109",
+            "ATR 42 DHC8-103"
+          ],
+          "manufacturer": "SAFRAN",
+          "rating": "C14",
+          "ataChapter": 60,
+          "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
+          "category": "LANDING GEAR",
+          "partNumberSeries": "D51791",
+          "partNumberModelNos": [
+            "D51791-C",
+            "D51791-40"
+          ],
+          "locations": {
+            "dkSgd": false,
+            "dkBll": false,
+            "myKul": true
+          },
+          "maintenanceReferences": [
+            "CMM 32-45-16",
+            "CMM 61-13-6"
+          ],
+          "equipmentTools": [
+            "Propeller fixture set"
+          ]
+        }
+      },
+      {
+        "revision": 2,
+        "capturedAt": "2026-04-09T11:54:37.440Z",
+        "capturedByUserId": "U001",
+        "trigger": "RESUBMIT",
+        "referenceNo": "CA/2026/1004",
+        "payload": {
+          "aircraft": "Aircraft",
+          "aircraftModels": [
+            "ATR 42 DHC8-109",
+            "ATR 42 DHC8-103"
+          ],
+          "manufacturer": "SAFRAN",
+          "rating": "C16",
+          "ataChapter": 60,
+          "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
+          "category": "LANDING GEAR",
+          "partNumberSeries": "D51791",
+          "partNumberModelNos": [
+            "D51791-C",
+            "D51791-40"
+          ],
+          "locations": {
+            "dkSgd": true,
+            "dkBll": true,
+            "myKul": true
+          },
+          "maintenanceReferences": [
+            "CMM 32-45-16",
+            "CMM 61-13-6"
+          ],
+          "equipmentTools": [
+            "Propeller fixture set"
+          ]
+        }
+      }
+    ]
   }
 ]
