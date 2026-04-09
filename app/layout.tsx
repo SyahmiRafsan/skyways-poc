@@ -49,9 +49,21 @@ export default async function RootLayout({
 }>) {
   const currentYear = new Date().getFullYear()
   const session = await getSessionFromCookieStore()
-  const myPendingCount = session
-    ? getPendingApprovalsForRole(await readCapabilities(), session.role).length
-    : 0
+  let myPendingCount = 0
+  if (session) {
+    const capabilities = await readCapabilities()
+
+    if (session.role === "user") {
+      myPendingCount = capabilities.filter(
+        (capability) =>
+          (capability.status === "USER_EDIT_REQUIRED" ||
+            capability.status === "AUTHORITY_REJECTED") &&
+          capability.submittedByUserId === session.id
+      ).length
+    } else {
+      myPendingCount = getPendingApprovalsForRole(capabilities, session.role).length
+    }
+  }
   const avatarSrc = session ? session.avatarUrl : null
   const avatarFallback = session?.name?.slice(0, 1).toUpperCase() ?? "U"
 

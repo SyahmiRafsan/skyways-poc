@@ -32,7 +32,8 @@ export default async function ApprovalsPage() {
   const userRejectedCapabilities = isUserRole
     ? capabilities.filter(
         (capability) =>
-          capability.status === "USER_EDIT_REQUIRED" &&
+          (capability.status === "USER_EDIT_REQUIRED" ||
+            capability.status === "AUTHORITY_REJECTED") &&
           capability.submittedByUserId === session.id
       )
     : undefined
@@ -47,11 +48,12 @@ export default async function ApprovalsPage() {
       title="Approvals"
       countLabel="Pending Approvals"
       showDataViewToggle
+      showPrimaryDataViewToggle={!isUserRole}
       primaryLabel="My Approvals"
       secondaryLabel="Pending Approvals"
       draftsLabel="Drafts"
       rejectedLabel="Rejected"
-      defaultDataView="primary"
+      defaultDataView={isUserRole ? "secondary" : "primary"}
       showApprovalsCards={false}
     />
   )

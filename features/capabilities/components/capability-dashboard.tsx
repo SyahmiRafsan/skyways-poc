@@ -46,6 +46,7 @@ type CapabilityDashboardProps = {
   showSearch?: boolean
   showApprovalsCards?: boolean
   showDataViewToggle?: boolean
+  showPrimaryDataViewToggle?: boolean
   defaultDataView?: "primary" | "secondary" | "drafts" | "rejected"
   primaryLabel?: string
   secondaryLabel?: string
@@ -205,6 +206,7 @@ export function CapabilityDashboard({
   showSearch = true,
   showApprovalsCards = true,
   showDataViewToggle = false,
+  showPrimaryDataViewToggle = true,
   defaultDataView = "primary",
   primaryLabel = "Primary",
   secondaryLabel = "Secondary",
@@ -365,20 +367,22 @@ export function CapabilityDashboard({
               {showDataViewToggle &&
               (hasSecondaryData || hasDraftData || hasRejectedData) ? (
                 <div className="inline-flex items-center gap-1 rounded-md border border-border bg-background p-1">
-                  <Button
-                    type="button"
-                    variant={dataView === "primary" ? "default" : "outline"}
-                    size="sm"
-                    className="h-9 px-3"
-                    onClick={() => setDataView("primary")}
-                  >
-                    <span>{primaryLabel}</span>
-                    {primaryCount > 0 ? (
-                      <Badge variant="secondary" className="min-w-5 px-1.5">
-                        {primaryCount}
-                      </Badge>
-                    ) : null}
-                  </Button>
+                  {showPrimaryDataViewToggle ? (
+                    <Button
+                      type="button"
+                      variant={dataView === "primary" ? "default" : "outline"}
+                      size="sm"
+                      className="h-9 px-3"
+                      onClick={() => setDataView("primary")}
+                    >
+                      <span>{primaryLabel}</span>
+                      {primaryCount > 0 ? (
+                        <Badge variant="secondary" className="min-w-5 px-1.5">
+                          {primaryCount}
+                        </Badge>
+                      ) : null}
+                    </Button>
+                  ) : null}
                   {hasSecondaryData ? (
                     <Button
                       type="button"
