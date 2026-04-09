@@ -62,7 +62,7 @@ export async function createCapabilityAction(
 ): Promise<CapabilityActionState> {
   const session = await getSessionFromCookieStore()
   if (!session || session.role !== "user") {
-    return { ok: false, error: "Only user role can create capability" }
+    return { ok: false, error: "Only user role can register PN Form" }
   }
 
   const formValues = extractFormValues(formData)
@@ -120,12 +120,12 @@ export async function updateCapabilityAction(
   const capabilities = await readCapabilities()
   const index = capabilities.findIndex((item) => item.id === id)
   if (index === -1) {
-    return { ok: false, error: "Capability not found" }
+    return { ok: false, error: "PN Form not found" }
   }
 
   const current = capabilities[index]
   if (!canUserEditCapability(current, session.id, session.role)) {
-    return { ok: false, error: "You cannot edit this capability" }
+    return { ok: false, error: "You cannot update this PN Form" }
   }
 
   const formValues = extractFormValues(formData)
@@ -181,18 +181,18 @@ export async function submitCapabilityAction(
 
   const session = await getSessionFromCookieStore()
   if (!session || session.role !== "user") {
-    return { ok: false, error: "Only user role can submit capability" }
+    return { ok: false, error: "Only user role can submit PN Form" }
   }
 
   const capabilities = await readCapabilities()
   const index = capabilities.findIndex((item) => item.id === id)
   if (index === -1) {
-    return { ok: false, error: "Capability not found" }
+    return { ok: false, error: "PN Form not found" }
   }
 
   const current = capabilities[index]
   if (!canUserEditCapability(current, session.id, session.role)) {
-    return { ok: false, error: "You cannot submit this capability" }
+    return { ok: false, error: "You cannot submit this PN Form" }
   }
 
   const validationError = validateStoredCapability(current)
@@ -241,12 +241,12 @@ export async function approveCapabilityAction(
   const capabilities = await readCapabilities()
   const index = capabilities.findIndex((item) => item.id === id)
   if (index === -1) {
-    return { ok: false, error: "Capability not found" }
+    return { ok: false, error: "PN Form not found" }
   }
 
   const current = capabilities[index]
   if (!canReviewerAct(current, session.role)) {
-    return { ok: false, error: "You cannot approve this capability" }
+    return { ok: false, error: "You cannot approve this PN Form" }
   }
 
   const reviewerRole = session.role
@@ -292,12 +292,12 @@ export async function rejectCapabilityAction(
   const capabilities = await readCapabilities()
   const index = capabilities.findIndex((item) => item.id === id)
   if (index === -1) {
-    return { ok: false, error: "Capability not found" }
+    return { ok: false, error: "PN Form not found" }
   }
 
   const current = capabilities[index]
   if (!canReviewerAct(current, session.role)) {
-    return { ok: false, error: "You cannot reject this capability" }
+    return { ok: false, error: "You cannot reject this PN Form" }
   }
 
   const remarks = String(formData.get("remarks") ?? "").trim()

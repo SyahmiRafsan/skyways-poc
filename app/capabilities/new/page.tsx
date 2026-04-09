@@ -7,7 +7,7 @@ import { getSessionFromCookieStore } from "@/features/auth/session"
 import type { CapabilityFormValues } from "@/features/capabilities/types"
 
 export const metadata: Metadata = {
-  title: "New Capability",
+  title: "Register PN Form",
 }
 
 const EMPTY_VALUES: CapabilityFormValues = {
@@ -39,7 +39,7 @@ export default async function NewCapabilityPage() {
             <CardTitle>Access restricted</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Only user role can create capabilities.
+            Only user role can register PN Forms.
           </CardContent>
         </Card>
       </main>
@@ -49,7 +49,7 @@ export default async function NewCapabilityPage() {
   return (
     <main className="p-6">
       <CapabilityForm
-        title="Create Capability"
+        title="Register PN Form"
         values={EMPTY_VALUES}
         saveAction={createCapabilityAction}
         saveButtonLabel="Create Draft"

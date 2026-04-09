@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
+import { IconArrowRight } from "@tabler/icons-react"
 import Link from "next/link"
 
+import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   approveCapabilityAction,
@@ -17,14 +19,54 @@ import {
   findCapabilityById,
   toMultilineText,
 } from "@/features/capabilities/server"
+import usersData from "@/features/auth/data/users.json"
 import { getSessionFromCookieStore } from "@/features/auth/session"
 
 export const metadata: Metadata = {
-  title: "Capability",
+  title: "PN Form",
 }
 
 type PageProps = {
   params: Promise<{ id: string }>
+}
+
+function formatDuration(fromIso: string, toIso: string): string {
+  const from = new Date(fromIso).getTime()
+  const to = new Date(toIso).getTime()
+
+  if (!Number.isFinite(from) || !Number.isFinite(to) || to <= from) {
+    return "-"
+  }
+
+  const totalMinutes = Math.floor((to - from) / (1000 * 60))
+  const days = Math.floor(totalMinutes / (60 * 24))
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60)
+  const minutes = totalMinutes % 60
+
+  const chunks: string[] = []
+  if (days > 0) chunks.push(`${days}d`)
+  if (hours > 0) chunks.push(`${hours}h`)
+  if (minutes > 0 || chunks.length === 0) chunks.push(`${minutes}m`)
+
+  return chunks.join(" ")
+}
+
+function getActionLabel(action: string): string {
+  if (action === "SUBMIT") return "Submitted by"
+  if (action === "RESUBMIT") return "Resubmitted by"
+  if (action === "APPROVE") return "Approved by"
+  if (action === "REJECT") return "Rejected by"
+  return "Updated by"
+}
+
+function formatStatusLabel(status: string): string {
+  if (status === "TSM_REVIEW") return "TSM Review"
+  if (status === "QAM_REVIEW") return "QAM Review"
+  if (status === "WM_REVIEW") return "WM Review"
+  if (status === "USER_EDIT_REQUIRED") return "User Edit Required"
+  if (status === "APPROVED") return "Approved"
+  if (status === "DRAFT") return "Draft"
+  return status
 }
 
 export default async function CapabilityDetailPage({ params }: PageProps) {
@@ -37,7 +79,7 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
       <main className="space-y-4 p-6">
         <Card>
           <CardHeader>
-            <CardTitle>Capability not found</CardTitle>
+            <CardTitle>PN Form not found</CardTitle>
           </CardHeader>
           <CardContent>
             <Link href="/" className="text-sm text-primary underline">
@@ -73,6 +115,9 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
 
   const canEdit = canUserEditCapability(capability, session.id, session.role)
   const canReview = canReviewerAct(capability, session.role)
+  const userIdToName = new Map(
+    usersData.map((user) => [user.id, user.name] as const)
+  )
 
   const boundUpdateAction = updateCapabilityAction.bind(null, capability.id)
   const boundSubmitAction = submitCapabilityAction.bind(null, capability.id)
@@ -83,29 +128,37 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
     <main className="space-y-4 p-6">
       <Card>
         <CardHeader>
-          <CardTitle>Capability #{capability.referenceNo}</CardTitle>
+          <CardTitle>PN Form #{capability.referenceNo}</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-2 text-sm md:grid-cols-4">
           <p>
-            <span className="font-medium">Status:</span> {capability.status}
+            <span className="font-medium">Status:</span>{" "}
+            <Badge variant="secondary">
+              {formatStatusLabel(capability.status)}
+            </Badge>
           </p>
           <p>
-            <span className="font-medium">Revision:</span> R{capability.revision}
+            <span className="font-medium">Revision:</span> R
+            {capability.revision}
           </p>
-          <p>
-            <span className="font-medium">Current Reviewer:</span>{" "}
-            {capability.currentReviewerRole ?? "-"}
-          </p>
+          {capability.status !== "APPROVED" ? (
+            <p>
+              <span className="font-medium">Current Reviewer:</span>{" "}
+              {capability.currentReviewerRole ?? "-"}
+            </p>
+          ) : null}
           <p>
             <span className="font-medium">Submitted By:</span>{" "}
-            {capability.submittedByUserId}
+            {userIdToName.get(capability.submittedByUserId) ??
+              capability.submittedByUserId}{" "}
+            ({capability.submittedByUserId})
           </p>
         </CardContent>
       </Card>
 
       {canEdit ? (
         <CapabilityForm
-          title="Edit Capability"
+          title="Update PN Form"
           values={formValues}
           saveAction={boundUpdateAction}
           saveButtonLabel="Save Changes"
@@ -128,29 +181,56 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
         </CardHeader>
         <CardContent>
           {capability.reviewTrail.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No review events yet.</p>
+            <p className="text-sm text-muted-foreground">
+              No review events yet.
+            </p>
           ) : (
             <ul className="space-y-2 text-sm">
-              {capability.reviewTrail.map((event, index) => (
-                <li
-                  key={`${event.at}-${index}`}
-                  className="rounded-md border border-border p-3"
-                >
-                  <p>
-                    <span className="font-medium">{event.action}</span> by{" "}
-                    {event.byRole} ({event.byUserId})
-                  </p>
-                  <p className="text-muted-foreground">
-                    {event.fromStatus} to {event.toStatus} at{" "}
-                    {new Date(event.at).toLocaleString()}
-                  </p>
-                  {event.remarks ? (
-                    <p className="text-muted-foreground">
-                      Remarks: {event.remarks}
+              {capability.reviewTrail.map((event, index) => {
+                const previous = capability.reviewTrail[index - 1]
+                const sincePrevious = previous
+                  ? formatDuration(previous.at, event.at)
+                  : "-"
+                const showDuration = sincePrevious !== "-"
+
+                return (
+                  <li
+                    key={`${event.at}-${index}`}
+                    className="rounded-md border border-border p-3"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <p>
+                        <span className="font-medium">
+                          {getActionLabel(event.action)}
+                        </span>{" "}
+                        {userIdToName.get(event.byUserId) ?? event.byUserId}
+                      </p>
+                      {showDuration ? (
+                        <span className="text-xs text-muted-foreground">
+                          {sincePrevious}
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="mt-1 flex items-center gap-2 text-muted-foreground">
+                      <Badge variant="secondary">
+                        {formatStatusLabel(event.fromStatus)}
+                      </Badge>
+                      <IconArrowRight size={14} />
+                      <Badge variant="secondary">
+                        {formatStatusLabel(event.toStatus)}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-muted-foreground">
+                      {new Date(event.at).toLocaleString()}
                     </p>
-                  ) : null}
-                </li>
-              ))}
+                    {event.remarks ? (
+                      <p className="text-muted-foreground">
+                        Remarks: {event.remarks}
+                      </p>
+                    ) : null}
+                  </li>
+                )
+              })}
             </ul>
           )}
         </CardContent>

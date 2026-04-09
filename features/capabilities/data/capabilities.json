@@ -27,7 +27,40 @@
     "status": "APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
-    "reviewTrail": [],
+    "reviewTrail": [
+      {
+        "at": "2025-01-20T02:10:00.000Z",
+        "byUserId": "U001",
+        "byRole": "user",
+        "action": "SUBMIT",
+        "fromStatus": "DRAFT",
+        "toStatus": "TSM_REVIEW"
+      },
+      {
+        "at": "2025-01-20T04:00:00.000Z",
+        "byUserId": "T001",
+        "byRole": "tsm",
+        "action": "APPROVE",
+        "fromStatus": "TSM_REVIEW",
+        "toStatus": "QAM_REVIEW"
+      },
+      {
+        "at": "2025-01-20T07:15:00.000Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "APPROVE",
+        "fromStatus": "QAM_REVIEW",
+        "toStatus": "WM_REVIEW"
+      },
+      {
+        "at": "2025-01-21T01:30:00.000Z",
+        "byUserId": "W001",
+        "byRole": "wm",
+        "action": "APPROVE",
+        "fromStatus": "WM_REVIEW",
+        "toStatus": "APPROVED"
+      }
+    ],
     "currentReviewerRole": null
   },
   {
@@ -59,7 +92,40 @@
     "status": "APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
-    "reviewTrail": [],
+    "reviewTrail": [
+      {
+        "at": "2025-01-22T03:25:00.000Z",
+        "byUserId": "U001",
+        "byRole": "user",
+        "action": "SUBMIT",
+        "fromStatus": "DRAFT",
+        "toStatus": "TSM_REVIEW"
+      },
+      {
+        "at": "2025-01-22T05:05:00.000Z",
+        "byUserId": "T001",
+        "byRole": "tsm",
+        "action": "APPROVE",
+        "fromStatus": "TSM_REVIEW",
+        "toStatus": "QAM_REVIEW"
+      },
+      {
+        "at": "2025-01-22T08:40:00.000Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "APPROVE",
+        "fromStatus": "QAM_REVIEW",
+        "toStatus": "WM_REVIEW"
+      },
+      {
+        "at": "2025-01-23T00:50:00.000Z",
+        "byUserId": "W001",
+        "byRole": "wm",
+        "action": "APPROVE",
+        "fromStatus": "WM_REVIEW",
+        "toStatus": "APPROVED"
+      }
+    ],
     "currentReviewerRole": null
   },
   {
@@ -90,7 +156,40 @@
     "status": "APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
-    "reviewTrail": [],
+    "reviewTrail": [
+      {
+        "at": "2025-01-24T01:45:00.000Z",
+        "byUserId": "U001",
+        "byRole": "user",
+        "action": "SUBMIT",
+        "fromStatus": "DRAFT",
+        "toStatus": "TSM_REVIEW"
+      },
+      {
+        "at": "2025-01-24T04:15:00.000Z",
+        "byUserId": "T001",
+        "byRole": "tsm",
+        "action": "APPROVE",
+        "fromStatus": "TSM_REVIEW",
+        "toStatus": "QAM_REVIEW"
+      },
+      {
+        "at": "2025-01-24T09:10:00.000Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "APPROVE",
+        "fromStatus": "QAM_REVIEW",
+        "toStatus": "WM_REVIEW"
+      },
+      {
+        "at": "2025-01-25T02:20:00.000Z",
+        "byUserId": "W001",
+        "byRole": "wm",
+        "action": "APPROVE",
+        "fromStatus": "WM_REVIEW",
+        "toStatus": "APPROVED"
+      }
+    ],
     "currentReviewerRole": null
   }
 ]

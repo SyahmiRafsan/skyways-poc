@@ -237,7 +237,7 @@ export function CapabilityForm({
     setIsSaving(false)
 
     if (!result.ok) {
-      setServerError(result.error ?? "Unable to save capability")
+      setServerError(result.error ?? "Unable to save PN Form")
       return false
     }
 
@@ -263,7 +263,7 @@ export function CapabilityForm({
     setIsSubmitting(false)
 
     if (!result.ok) {
-      setServerError(result.error ?? "Unable to submit capability")
+      setServerError(result.error ?? "Unable to submit PN Form")
     }
   })
 

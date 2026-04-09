@@ -9,19 +9,63 @@ export function CapabilityView({ capability }: CapabilityViewProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Capability Details</CardTitle>
+        <CardTitle>PN Form Details</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 text-sm">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-          <p><span className="font-medium">Reference No:</span> {capability.referenceNo}</p>
-          <p><span className="font-medium">Aircraft / Engine:</span> {capability.aircraft}</p>
-          <p><span className="font-medium">Aircraft Model:</span> {capability.aircraftModel}</p>
-          <p><span className="font-medium">Manufacturer:</span> {capability.manufacturer}</p>
-          <p><span className="font-medium">Rating:</span> {capability.rating}</p>
-          <p><span className="font-medium">ATA Chapter:</span> {capability.ataChapter}</p>
-          <p><span className="font-medium">Category:</span> {capability.category}</p>
-          <p className="md:col-span-2"><span className="font-medium">Part Designation/Desc:</span> {capability.partDesignationDesc}</p>
-          <p className="md:col-span-2"><span className="font-medium">Part Number Series:</span> {capability.partNumberSeries}</p>
+          <div>
+            <p className="mb-1 font-medium">Reference No</p>
+            <p className="text-muted-foreground">{capability.referenceNo}</p>
+          </div>
+
+          <div>
+            <p className="mb-1 font-medium">Locations</p>
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+              {[
+                capability.locations.dkSgd ? "DK-SGD" : null,
+                capability.locations.dkBll ? "DK-BLL" : null,
+                capability.locations.myKul ? "MY-KUL" : null,
+              ]
+                .filter(Boolean)
+                .map((location) => <li key={location}>{location}</li>)}
+            </ul>
+          </div>
+
+          <div>
+            <p className="mb-1 font-medium">Aircraft / Engine</p>
+            <p className="text-muted-foreground">{capability.aircraft}</p>
+          </div>
+          <div>
+            <p className="mb-1 font-medium">Rating</p>
+            <p className="text-muted-foreground">{capability.rating}</p>
+          </div>
+          <div>
+            <p className="mb-1 font-medium">ATA Chapter</p>
+            <p className="text-muted-foreground">{capability.ataChapter}</p>
+          </div>
+          <div>
+            <p className="mb-1 font-medium">Category</p>
+            <p className="text-muted-foreground">{capability.category}</p>
+          </div>
+          <div className="md:col-span-2">
+            <p className="mb-1 font-medium">Part Designation/Desc</p>
+            <p className="text-muted-foreground">{capability.partDesignationDesc}</p>
+          </div>
+
+          <div>
+            <p className="mb-1 font-medium">Manufacturer</p>
+            <p className="text-muted-foreground">{capability.manufacturer}</p>
+          </div>
+
+          <div>
+            <p className="mb-1 font-medium">Aircraft Model</p>
+            <p className="text-muted-foreground">{capability.aircraftModel}</p>
+          </div>
+
+          <div className="md:col-span-2">
+            <p className="mb-1 font-medium">Part Number Series</p>
+            <p className="text-muted-foreground">{capability.partNumberSeries}</p>
+          </div>
         </div>
 
         <div>
@@ -31,19 +75,6 @@ export function CapabilityView({ capability }: CapabilityViewProps) {
               <li key={`${line}-${index}`}>{line}</li>
             ))}
           </ul>
-        </div>
-
-        <div>
-          <p className="mb-1 font-medium">Locations</p>
-          <p className="text-muted-foreground">
-            {[
-              capability.locations.dkSgd ? "DK-SGD" : null,
-              capability.locations.dkBll ? "DK-BLL" : null,
-              capability.locations.myKul ? "MY-KUL" : null,
-            ]
-              .filter(Boolean)
-              .join(", ") || "-"}
-          </p>
         </div>
 
         <div>

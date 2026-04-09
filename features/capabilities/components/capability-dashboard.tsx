@@ -1,6 +1,7 @@
 "use client"
 
 import { IconCheck, IconChevronDown, IconSearch } from "@tabler/icons-react"
+import Link from "next/link"
 import { useMemo, useState } from "react"
 
 import { Button } from "@/components/ui/button"
@@ -34,6 +35,12 @@ import type {
 type CapabilityDashboardProps = {
   approvals: AuthorityApproval[]
   capabilities: Capability[]
+  title?: string
+  countLabel?: string
+  searchPlaceholder?: string
+  showHeader?: boolean
+  showSearch?: boolean
+  showApprovalsCards?: boolean
 }
 
 type DashboardRow = {
@@ -178,6 +185,12 @@ function FilterCombobox({
 export function CapabilityDashboard({
   approvals,
   capabilities,
+  title = "Capability List Management",
+  countLabel = "Total Capabilities",
+  searchPlaceholder = "Search by caplist, PN, OEM, Aircraft Type",
+  showHeader = true,
+  showSearch = true,
+  showApprovalsCards = true,
 }: CapabilityDashboardProps) {
   const [query, setQuery] = useState("")
   const [filters, setFilters] =
@@ -238,63 +251,67 @@ export function CapabilityDashboard({
 
   return (
     <div className="space-y-8 px-4 py-8 md:px-6 md:py-10">
-      <section className="space-y-6 text-center">
-        <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">
-            Capability List Management
-          </h1>
-          <p className="text-lg font-medium text-muted-foreground">
-            Total Capabilities: {filteredRows.length}
-          </p>
-        </div>
+      {showHeader ? (
+        <section className="space-y-6 text-center">
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+            <p className="text-lg font-medium text-muted-foreground">
+              {countLabel}: {filteredRows.length}
+            </p>
+          </div>
 
-        <div className="flex flex-col justify-center gap-3 md:flex-row md:items-center">
-          <label className="relative max-w-md flex-1">
-            <IconSearch
-              size={20}
-              className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
-            />
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              className="h-11 pl-10"
-              placeholder="Search by caplist, PN, OEM, Aircraft Type"
-            />
-          </label>
-        </div>
-      </section>
+          {showSearch ? (
+            <div className="flex flex-col justify-center gap-3 md:flex-row md:items-center">
+              <label className="relative max-w-md flex-1">
+                <IconSearch
+                  size={20}
+                  className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-muted-foreground"
+                />
+                <Input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  className="h-11 pl-10"
+                  placeholder={searchPlaceholder}
+                />
+              </label>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
-      <section className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-        {approvals.map((approval) => (
-          <Card key={approval.authority} className="gap-2">
-            <CardHeader>
-              <CardTitle className="text-sm font-medium">
-                {approval.authority}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1 text-sm text-muted-foreground">
-              <p>
-                Issue No:{" "}
-                <span className="font-semibold text-foreground">
-                  {approval.issueNo}
-                </span>
-              </p>
-              <p>
-                Revision No:{" "}
-                <span className="font-semibold text-foreground">
-                  {approval.revisionNo}
-                </span>
-              </p>
-              <p>
-                Revision Date:{" "}
-                <span className="font-semibold text-foreground">
-                  {approval.revisionDate}
-                </span>
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </section>
+      {showApprovalsCards ? (
+        <section className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+          {approvals.map((approval) => (
+            <Card key={approval.authority} className="gap-2">
+              <CardHeader>
+                <CardTitle className="text-sm font-medium">
+                  {approval.authority}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1 text-sm text-muted-foreground">
+                <p>
+                  Issue No:{" "}
+                  <span className="font-semibold text-foreground">
+                    {approval.issueNo}
+                  </span>
+                </p>
+                <p>
+                  Revision No:{" "}
+                  <span className="font-semibold text-foreground">
+                    {approval.revisionNo}
+                  </span>
+                </p>
+                <p>
+                  Revision Date:{" "}
+                  <span className="font-semibold text-foreground">
+                    {approval.revisionDate}
+                  </span>
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </section>
+      ) : null}
 
       <Card className="overflow-hidden py-0">
         <CardContent className="px-0">
@@ -342,56 +359,121 @@ export function CapabilityDashboard({
                   key={capability.id}
                   className={index % 2 ? "bg-muted/20" : "bg-background"}
                 >
-                  <TableCell className="border-b py-4 pr-3 pl-6 font-medium">
-                    {capability.rating}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block py-4 pr-3 pl-6 font-medium hover:bg-muted/40"
+                    >
+                      {capability.rating}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.ataChapter}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.ataChapter}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.category}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.category}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.partDesignationDesc}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.partDesignationDesc}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.manufacturer}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.manufacturer}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.aircraftModel}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.aircraftModel}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.partNumberSeries}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.partNumberSeries}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.partNumberModelNos}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.partNumberModelNos}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.maintenanceReferences}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                    >
+                      {capability.maintenanceReferences}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 text-center">
-                    {capability.dkSgd ? (
-                      <IconCheck className="mx-auto" size={18} />
-                    ) : (
-                      "-"
-                    )}
+                  <TableCell className="border-b p-0 text-center">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 hover:bg-muted/40"
+                    >
+                      {capability.dkSgd ? (
+                        <IconCheck className="mx-auto" size={18} />
+                      ) : (
+                        "-"
+                      )}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 text-center">
-                    {capability.dkBll ? (
-                      <IconCheck className="mx-auto" size={18} />
-                    ) : (
-                      "-"
-                    )}
+                  <TableCell className="border-b p-0 text-center">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 hover:bg-muted/40"
+                    >
+                      {capability.dkBll ? (
+                        <IconCheck className="mx-auto" size={18} />
+                      ) : (
+                        "-"
+                      )}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b px-3 py-4 text-center">
-                    {capability.myKul ? (
-                      <IconCheck className="mx-auto" size={18} />
-                    ) : (
-                      "-"
-                    )}
+                  <TableCell className="border-b p-0 text-center">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block px-3 py-4 hover:bg-muted/40"
+                    >
+                      {capability.myKul ? (
+                        <IconCheck className="mx-auto" size={18} />
+                      ) : (
+                        "-"
+                      )}
+                    </Link>
                   </TableCell>
-                  <TableCell className="border-b py-4 pr-6 pl-3 font-medium">
-                    {capability.referenceNo}
+                  <TableCell className="border-b p-0">
+                    <Link
+                      href={`/capabilities/${capability.id}`}
+                      className="block py-4 pr-6 pl-3 font-medium hover:bg-muted/40"
+                    >
+                      {capability.referenceNo}
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
