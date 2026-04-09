@@ -117,7 +117,7 @@ export function ReviewHistory({
   users,
   variant = "card",
 }: ReviewHistoryProps) {
-  const [showStatusBadges, setShowStatusBadges] = useState(true)
+  const [showStatusBadges, setShowStatusBadges] = useState(false)
   const switchId = useId()
 
   const userIdToUser = new Map(users.map((user) => [user.id, user] as const))

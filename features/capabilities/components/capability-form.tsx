@@ -6,6 +6,16 @@ import { useEffect, useMemo, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -191,6 +201,7 @@ export function CapabilityForm({
 }: CapabilityFormProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitConfirmOpen, setIsSubmitConfirmOpen] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
   const demoPrefillFactory = useMemo(
     () =>
@@ -765,14 +776,42 @@ export function CapabilityForm({
               ) : null}
 
               {submitAction ? (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={isSaving || isSubmitting}
-                  onClick={handleSubmitForReview}
+                <AlertDialog
+                  open={isSubmitConfirmOpen}
+                  onOpenChange={setIsSubmitConfirmOpen}
                 >
-                  {isSubmitting ? "Submitting..." : "Submit for Review"}
-                </Button>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={isSaving || isSubmitting}
+                    onClick={() => setIsSubmitConfirmOpen(true)}
+                  >
+                    {isSubmitting ? "Submitting..." : "Submit for Review"}
+                  </Button>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Submit PN Form for Review?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action changes workflow status and cannot be reversed
+                        directly.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel disabled={isSaving || isSubmitting}>
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        disabled={isSaving || isSubmitting}
+                        onClick={() => {
+                          setIsSubmitConfirmOpen(false)
+                          void handleSubmitForReview()
+                        }}
+                      >
+                        {isSubmitting ? "Submitting..." : "Confirm Submit"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               ) : null}
             </div>
           ) : null}
