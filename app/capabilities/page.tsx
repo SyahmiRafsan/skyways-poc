@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 import { CapabilityDashboard } from "@/features/capabilities/components/capability-dashboard"
 import approvalsData from "@/features/capabilities/data/authorities-lvl.json"
-import capabilitiesData from "@/features/capabilities/data/capabilities.json"
+import { readCapabilities } from "@/features/capabilities/server"
 import type { AuthorityApproval, Capability } from "@/features/capabilities/types"
 
 export const metadata: Metadata = {
@@ -10,10 +10,12 @@ export const metadata: Metadata = {
 }
 
 export default async function CapabilitiesMasterListPage() {
+  const capabilities = await readCapabilities()
+
   return (
     <CapabilityDashboard
       approvals={approvalsData as AuthorityApproval[]}
-      capabilities={capabilitiesData as Capability[]}
+      capabilities={capabilities as Capability[]}
       showHeader={false}
       showSearch={false}
       showApprovalsCards={false}

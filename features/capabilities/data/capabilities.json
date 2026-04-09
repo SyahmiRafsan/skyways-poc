@@ -3,29 +3,21 @@
     "id": "cap-001",
     "referenceNo": "CA/2025/1199",
     "aircraft": "Aircraft",
-    "aircraftModels": [
-      "ATR 42 DHC8-100"
-    ],
+    "aircraftModels": ["ATR 42 DHC8-100"],
     "manufacturer": "HAMILTON SUNDSTRAND",
     "rating": "C16",
     "ataChapter": 61,
     "partDesignationDesc": "PROPELLER SPINNER",
     "category": "PROPELLERS",
     "partNumberSeries": "790176",
-    "partNumberModelNos": [
-      "790176-1"
-    ],
+    "partNumberModelNos": ["790176-1"],
     "locations": {
       "dkSgd": true,
       "dkBll": true,
       "myKul": true
     },
-    "maintenanceReferences": [
-      "CMM 61-13-02"
-    ],
-    "equipmentTools": [
-      "Standard propeller balancing kit"
-    ],
+    "maintenanceReferences": ["CMM 61-13-02"],
+    "equipmentTools": ["Standard propeller balancing kit"],
     "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
@@ -85,30 +77,21 @@
     "id": "cap-002",
     "referenceNo": "CA/2025/1200",
     "aircraft": "Aircraft",
-    "aircraftModels": [
-      "ATR 42 DHC8-100"
-    ],
+    "aircraftModels": ["ATR 42 DHC8-100"],
     "manufacturer": "HAMILTON SUNDSTRAND",
     "rating": "C16",
     "ataChapter": 61,
     "partDesignationDesc": "VARIABLE PITCH AIRCRAFT PROPELLER",
     "category": "PROPELLERS",
     "partNumberSeries": "792000",
-    "partNumberModelNos": [
-      "792000-X"
-    ],
+    "partNumberModelNos": ["792000-X"],
     "locations": {
       "dkSgd": true,
       "dkBll": true,
       "myKul": true
     },
-    "maintenanceReferences": [
-      "CMM 61-13-02"
-    ],
-    "equipmentTools": [
-      "Propeller fixture set",
-      "Dynamic balancing analyzer"
-    ],
+    "maintenanceReferences": ["CMM 61-13-02"],
+    "equipmentTools": ["Propeller fixture set", "Dynamic balancing analyzer"],
     "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
@@ -168,29 +151,21 @@
     "id": "cap-003",
     "referenceNo": "CA/2025/1201",
     "aircraft": "Aircraft",
-    "aircraftModels": [
-      "A320 FAMILY"
-    ],
+    "aircraftModels": ["A320 FAMILY"],
     "manufacturer": "SAFRAN",
     "rating": "C14",
     "ataChapter": 32,
     "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
     "category": "LANDING GEAR",
     "partNumberSeries": "D51785",
-    "partNumberModelNos": [
-      "D51785-12"
-    ],
+    "partNumberModelNos": ["D51785-12"],
     "locations": {
       "dkSgd": true,
       "dkBll": false,
       "myKul": true
     },
-    "maintenanceReferences": [
-      "CMM 32-45-11"
-    ],
-    "equipmentTools": [
-      "Hydraulic pressure test bench"
-    ],
+    "maintenanceReferences": ["CMM 32-45-11"],
+    "equipmentTools": ["Hydraulic pressure test bench"],
     "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
@@ -250,30 +225,21 @@
     "id": "88a6aaae-7678-4836-82a9-46a31fce834f",
     "referenceNo": "CA/2026/1000",
     "aircraft": "Aircraft",
-    "aircraftModels": [
-      "A326 FAMILY",
-      "ATR 42 DHC8-102"
-    ],
+    "aircraftModels": ["A326 FAMILY", "ATR 42 DHC8-102"],
     "manufacturer": "SAFRAN",
     "rating": "C14",
     "ataChapter": 33,
     "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
     "category": "LANDING GEAR",
     "partNumberSeries": "D51789",
-    "partNumberModelNos": [
-      "D51789-20P"
-    ],
+    "partNumberModelNos": ["D51789-20P"],
     "locations": {
       "dkSgd": true,
       "dkBll": false,
       "myKul": false
     },
-    "maintenanceReferences": [
-      "CMM 61-13-3"
-    ],
-    "equipmentTools": [
-      "Propeller fixture set"
-    ],
+    "maintenanceReferences": ["CMM 61-13-3"],
+    "equipmentTools": ["Propeller fixture set"],
     "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
@@ -331,34 +297,24 @@
   },
   {
     "id": "12d5fb9f-76d5-4c2d-a728-3fec281bd32e",
-    "referenceNo": "CA/2026/1002",
+    "referenceNo": "CA/2026/1001",
     "aircraft": "Aircraft",
-    "aircraftModels": [
-      "ATR 42 DHC8-106",
-      "A331 FAMILY"
-    ],
+    "aircraftModels": ["ATR 42 DHC8-106", "A331 FAMILY"],
     "manufacturer": "SAFRAN",
     "rating": "C14",
     "ataChapter": 62,
     "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
     "category": "LANDING GEAR",
     "partNumberSeries": "D51790",
-    "partNumberModelNos": [
-      "D51790-S",
-      "D51790-87"
-    ],
+    "partNumberModelNos": ["D51790-S", "D51790-87"],
     "locations": {
       "dkSgd": false,
       "dkBll": false,
       "myKul": true
     },
-    "maintenanceReferences": [
-      "CMM 61-13-3"
-    ],
-    "equipmentTools": [
-      "Standard propeller balancing kit"
-    ],
-    "status": "SUBMITTED_TO_AUTHORITY",
+    "maintenanceReferences": ["CMM 61-13-3"],
+    "equipmentTools": ["Standard propeller balancing kit"],
+    "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 1,
     "reviewTrail": [
@@ -426,8 +382,16 @@
         "action": "MARK_SUBMITTED_TO_AUTHORITY",
         "fromStatus": "READY_FOR_SUBMISSION",
         "toStatus": "SUBMITTED_TO_AUTHORITY"
+      },
+      {
+        "at": "2026-04-09T11:07:06.327Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_AUTHORITY_APPROVED",
+        "fromStatus": "SUBMITTED_TO_AUTHORITY",
+        "toStatus": "AUTHORITY_APPROVED"
       }
     ],
-    "currentReviewerRole": "qam"
+    "currentReviewerRole": null
   }
 ]
