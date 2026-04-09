@@ -7,7 +7,10 @@ import { loginAction } from "@/features/auth/actions"
 const INITIAL_STATE = { error: null as string | null }
 
 export function LoginForm() {
-  const [state, formAction, isPending] = useActionState(loginAction, INITIAL_STATE)
+  const [state, formAction, isPending] = useActionState(
+    loginAction,
+    INITIAL_STATE
+  )
 
   return (
     <form action={formAction} className="flex w-full max-w-sm flex-col gap-3">
@@ -20,6 +23,7 @@ export function LoginForm() {
           required
           className="h-10 rounded-md border border-border bg-background px-3 text-sm"
           placeholder="user@skycaplist.test"
+          defaultValue="user@skycaplist.test"
         />
       </label>
 
@@ -32,6 +36,7 @@ export function LoginForm() {
           required
           className="h-10 rounded-md border border-border bg-background px-3 text-sm"
           placeholder="anything"
+          defaultValue="anything"
         />
       </label>
 

@@ -73,13 +73,10 @@ export default async function RootLayout({
             {session ? (
               <header className="flex items-center justify-between px-6 py-3">
                 <div className="flex items-center bg-[#051f44] p-3">
-                  <Image
+                  <img
                     src="/logo-skyways.webp"
                     alt="Skyways"
-                    width={160}
-                    height={24}
                     className="h-4 w-auto"
-                    priority
                   />
                 </div>
 
@@ -197,7 +194,7 @@ export default async function RootLayout({
                 </div>
               </header>
             ) : null}
-            <main className="flex-1">{children}</main>
+            <main className="flex flex-1 flex-col">{children}</main>
             <footer className="mt-auto px-6 py-6 pb-4 text-center text-xs text-muted-foreground uppercase">
               © {currentYear} SkyCaplist by Skyways Technics. All rights
               reserved.
