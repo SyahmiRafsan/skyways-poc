@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { IconPlus, IconTrash } from "@tabler/icons-react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Controller, useFieldArray, useForm } from "react-hook-form"
 import { z } from "zod"
 
@@ -26,6 +26,11 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { LOCATION_OPTIONS } from "@/features/capabilities/constants"
+import {
+  buildDemoPrefillFactory,
+  getNextReferenceNo,
+  type DemoPrefillFactoryInput,
+} from "@/features/capabilities/demo-prefill"
 import type {
   CapabilityActionState,
   CapabilityFormValues,
@@ -43,6 +48,8 @@ type CapabilityFormProps = {
   saveAction?: CapabilityFormAction
   saveButtonLabel?: string
   submitAction?: CapabilityFormAction
+  showDemoPrefill?: boolean
+  demoPrefillConfig?: DemoPrefillFactoryInput
 }
 
 const multilineLineSchema = z.object({
@@ -179,10 +186,27 @@ export function CapabilityForm({
   saveAction,
   saveButtonLabel = "Save",
   submitAction,
+  showDemoPrefill = false,
+  demoPrefillConfig,
 }: CapabilityFormProps) {
   const [isSaving, setIsSaving] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
+  const demoPrefillFactory = useMemo(
+    () =>
+      demoPrefillConfig ? buildDemoPrefillFactory(demoPrefillConfig) : null,
+    [demoPrefillConfig]
+  )
+  const demoReferenceNo = useMemo(
+    () =>
+      demoPrefillConfig
+        ? getNextReferenceNo(
+            demoPrefillConfig.seedCapabilities,
+            demoPrefillConfig.year
+          )
+        : "",
+    [demoPrefillConfig]
+  )
 
   const form = useForm<CapabilityFormInput>({
     resolver: zodResolver(capabilityFormSchema),
@@ -275,6 +299,20 @@ export function CapabilityForm({
       setServerError(result.error ?? "Unable to submit PN Form")
     }
   })
+
+  const handleDemoPrefill = () => {
+    if (!demoPrefillFactory) {
+      return
+    }
+
+    const nextValues = demoPrefillFactory()
+    const currentReferenceNo = form.getValues("referenceNo")
+    nextValues.referenceNo = currentReferenceNo.trim()
+      ? currentReferenceNo
+      : demoReferenceNo
+    form.reset(toDefaultValues(nextValues))
+    setServerError(null)
+  }
 
   return (
     <Card>
@@ -709,6 +747,17 @@ export function CapabilityForm({
 
           {!readOnly ? (
             <div className="flex flex-wrap gap-2 pt-2">
+              {showDemoPrefill && demoPrefillFactory ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isSaving || isSubmitting}
+                  onClick={handleDemoPrefill}
+                >
+                  Demo Prefill
+                </Button>
+              ) : null}
+
               {saveAction ? (
                 <Button type="submit" disabled={isSaving || isSubmitting}>
                   {isSaving ? "Saving..." : saveButtonLabel}

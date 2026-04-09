@@ -6,7 +6,6 @@ import {
   IconPlus,
 } from "@tabler/icons-react"
 import { Geist_Mono, Inter } from "next/font/google"
-import Image from "next/image"
 import Link from "next/link"
 
 import "./globals.css"

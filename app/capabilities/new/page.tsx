@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { createCapabilityAction } from "@/features/capabilities/actions"
 import { CapabilityForm } from "@/features/capabilities/components/capability-form"
+import { readCapabilities } from "@/features/capabilities/server"
 import { getSessionFromCookieStore } from "@/features/auth/session"
 import type { CapabilityFormValues } from "@/features/capabilities/types"
 
@@ -30,6 +31,11 @@ const EMPTY_VALUES: CapabilityFormValues = {
 
 export default async function NewCapabilityPage() {
   const session = await getSessionFromCookieStore()
+  const capabilities = await readCapabilities()
+  const demoPrefillConfig = {
+    seedCapabilities: capabilities,
+    year: new Date().getFullYear(),
+  }
 
   if (!session || session.role !== "user") {
     return (
@@ -53,6 +59,8 @@ export default async function NewCapabilityPage() {
         values={EMPTY_VALUES}
         saveAction={createCapabilityAction}
         saveButtonLabel="Create Draft"
+        showDemoPrefill
+        demoPrefillConfig={demoPrefillConfig}
       />
     </main>
   )
