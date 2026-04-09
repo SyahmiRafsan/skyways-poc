@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { LOCATION_OPTIONS } from "@/features/capabilities/constants"
 import type {
   CapabilityActionState,
@@ -49,6 +56,7 @@ export function CapabilityForm({
   const [locationDkSgd, setLocationDkSgd] = useState(values.locationDkSgd)
   const [locationDkBll, setLocationDkBll] = useState(values.locationDkBll)
   const [locationMyKul, setLocationMyKul] = useState(values.locationMyKul)
+  const [aircraftType, setAircraftType] = useState(values.aircraft)
   const [maintenanceLines, setMaintenanceLines] = useState(() =>
     parseMultilineValue(values.maintenanceReferences)
   )
@@ -88,10 +96,48 @@ export function CapabilityForm({
             </label>
 
             <label className="space-y-1">
-              <span className="text-sm font-medium">Aircraft</span>
+              <span className="text-sm font-medium">Aircraft / Engine</span>
+              <input type="hidden" name="aircraft" value={aircraftType} />
+              <Select
+                value={aircraftType}
+                onValueChange={(nextValue) => setAircraftType(nextValue ?? "")}
+                disabled={readOnly}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Aircraft">Aircraft</SelectItem>
+                  <SelectItem value="Engine">Engine</SelectItem>
+                </SelectContent>
+              </Select>
+            </label>
+
+            <label className="space-y-1">
+              <span className="text-sm font-medium">Aircraft Model</span>
               <Input
-                name="aircraft"
-                defaultValue={values.aircraft}
+                name="aircraftModel"
+                defaultValue={values.aircraftModel}
+                readOnly={readOnly}
+                disabled={readOnly}
+              />
+            </label>
+
+            <label className="space-y-1">
+              <span className="text-sm font-medium">Manufacturer</span>
+              <Input
+                name="manufacturer"
+                defaultValue={values.manufacturer}
+                readOnly={readOnly}
+                disabled={readOnly}
+              />
+            </label>
+
+            <label className="space-y-1">
+              <span className="text-sm font-medium">Rating</span>
+              <Input
+                name="rating"
+                defaultValue={values.rating}
                 readOnly={readOnly}
                 disabled={readOnly}
               />

@@ -14,7 +14,10 @@ export function CapabilityView({ capability }: CapabilityViewProps) {
       <CardContent className="space-y-4 text-sm">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
           <p><span className="font-medium">Reference No:</span> {capability.referenceNo}</p>
-          <p><span className="font-medium">Aircraft:</span> {capability.aircraft}</p>
+          <p><span className="font-medium">Aircraft / Engine:</span> {capability.aircraft}</p>
+          <p><span className="font-medium">Aircraft Model:</span> {capability.aircraftModel}</p>
+          <p><span className="font-medium">Manufacturer:</span> {capability.manufacturer}</p>
+          <p><span className="font-medium">Rating:</span> {capability.rating}</p>
           <p><span className="font-medium">ATA Chapter:</span> {capability.ataChapter}</p>
           <p><span className="font-medium">Category:</span> {capability.category}</p>
           <p className="md:col-span-2"><span className="font-medium">Part Designation/Desc:</span> {capability.partDesignationDesc}</p>

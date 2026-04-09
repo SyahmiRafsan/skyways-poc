@@ -37,21 +37,15 @@ export type CapabilityReviewEvent = {
   toStatus: CapabilityStatus
 }
 
+export type CapabilityAircraftType = "Aircraft" | "Engine"
+
 export type Capability = {
   id: string
-  rating: string
-  ata: string
-  designation: string
-  manufacturer: string
-  aircraftModel: string
-  pnSeries: string
-  pn: string
-  maintenanceReference: string
-  dkSgd: boolean
-  dkBll: boolean
-  myKul: boolean
   referenceNo: string
-  aircraft: string
+  aircraft: CapabilityAircraftType
+  aircraftModel: string
+  manufacturer: string
+  rating: string
   ataChapter: number
   partDesignationDesc: string
   category: string
@@ -70,6 +64,9 @@ export type Capability = {
 export type CapabilityFormValues = {
   referenceNo: string
   aircraft: string
+  aircraftModel: string
+  manufacturer: string
+  rating: string
   ataChapter: string
   partDesignationDesc: string
   category: string

@@ -22,35 +22,6 @@ import type {
   CapabilityActionState,
 } from "@/features/capabilities/types"
 
-function toLegacyFields(input: {
-  aircraft: string
-  ataChapter: number
-  partDesignationDesc: string
-  partNumberSeries: string
-  partNumberModelNos: string[]
-  maintenanceReferences: string[]
-  locations: Capability["locations"]
-  category: string
-  rating: string
-  manufacturer: string
-  pn: string
-}) {
-  return {
-    rating: input.rating,
-    ata: String(input.ataChapter),
-    designation: input.partDesignationDesc,
-    manufacturer: input.manufacturer,
-    aircraftModel: input.aircraft,
-    pnSeries: input.partNumberSeries,
-    pn: input.partNumberModelNos[0] ?? input.pn,
-    maintenanceReference: input.maintenanceReferences.join(" | "),
-    dkSgd: input.locations.dkSgd,
-    dkBll: input.locations.dkBll,
-    myKul: input.locations.myKul,
-    category: input.category,
-  }
-}
-
 function revalidateCapabilityRoutes(id?: string) {
   revalidatePath("/")
   revalidatePath("/capabilities/new")
@@ -61,7 +32,13 @@ function revalidateCapabilityRoutes(id?: string) {
 
 function validateStoredCapability(capability: Capability): string | null {
   if (!capability.referenceNo.trim()) return "Reference number is required"
-  if (!capability.aircraft.trim()) return "Aircraft is required"
+  if (!capability.aircraft) return "Aircraft/Engine is required"
+  if (capability.aircraft !== "Aircraft" && capability.aircraft !== "Engine") {
+    return "Aircraft must be either Aircraft or Engine"
+  }
+  if (!capability.aircraftModel.trim()) return "Aircraft model is required"
+  if (!capability.manufacturer.trim()) return "Manufacturer is required"
+  if (!capability.rating.trim()) return "Rating is required"
   if (!Number.isInteger(capability.ataChapter) || capability.ataChapter < 1 || capability.ataChapter > 100) {
     return "ATA chapter must be an integer between 1 and 100"
   }
@@ -104,21 +81,11 @@ export async function createCapabilityAction(
 
   const created: Capability = {
     id: randomUUID(),
-    ...toLegacyFields({
-      aircraft: validated.value.aircraft,
-      ataChapter: validated.value.ataChapter,
-      partDesignationDesc: validated.value.partDesignationDesc,
-      partNumberSeries: validated.value.partNumberSeries,
-      partNumberModelNos: validated.value.partNumberModelNos,
-      maintenanceReferences: validated.value.maintenanceReferences,
-      locations: validated.value.locations,
-      category: validated.value.category,
-      rating: "N/A",
-      manufacturer: "N/A",
-      pn: "N/A",
-    }),
     referenceNo: validated.value.referenceNo,
     aircraft: validated.value.aircraft,
+    aircraftModel: validated.value.aircraftModel,
+    manufacturer: validated.value.manufacturer,
+    rating: validated.value.rating,
     ataChapter: validated.value.ataChapter,
     partDesignationDesc: validated.value.partDesignationDesc,
     category: validated.value.category,
@@ -184,21 +151,11 @@ export async function updateCapabilityAction(
 
   capabilities[index] = {
     ...current,
-    ...toLegacyFields({
-      aircraft: validated.value.aircraft,
-      ataChapter: validated.value.ataChapter,
-      partDesignationDesc: validated.value.partDesignationDesc,
-      partNumberSeries: validated.value.partNumberSeries,
-      partNumberModelNos: validated.value.partNumberModelNos,
-      maintenanceReferences: validated.value.maintenanceReferences,
-      locations: validated.value.locations,
-      category: validated.value.category,
-      rating: current.rating,
-      manufacturer: current.manufacturer,
-      pn: current.pn,
-    }),
     referenceNo: nextReferenceNo,
     aircraft: validated.value.aircraft,
+    aircraftModel: validated.value.aircraftModel,
+    manufacturer: validated.value.manufacturer,
+    rating: validated.value.rating,
     ataChapter: validated.value.ataChapter,
     partDesignationDesc: validated.value.partDesignationDesc,
     category: validated.value.category,
@@ -252,15 +209,6 @@ export async function submitCapabilityAction(
   let next: Capability = {
     ...current,
     referenceNo: nextReferenceNo,
-    ata: String(current.ataChapter),
-    designation: current.partDesignationDesc,
-    aircraftModel: current.aircraft,
-    pnSeries: current.partNumberSeries,
-    pn: current.partNumberModelNos[0] ?? current.pn,
-    maintenanceReference: current.maintenanceReferences.join(" | "),
-    dkSgd: current.locations.dkSgd,
-    dkBll: current.locations.dkBll,
-    myKul: current.locations.myKul,
     status: "TSM_REVIEW",
     currentReviewerRole: "tsm",
     revision: isResubmit ? current.revision + 1 : current.revision,

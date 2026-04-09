@@ -8,6 +8,7 @@ import {
 } from "@/features/capabilities/constants"
 import type { Role } from "@/features/auth/types"
 import type {
+  CapabilityAircraftType,
   Capability,
   CapabilityAction,
   CapabilityFormValues,
@@ -24,7 +25,10 @@ type ValidationResult =
       ok: true
       value: {
         referenceNo: string
-        aircraft: string
+        aircraft: CapabilityAircraftType
+        aircraftModel: string
+        manufacturer: string
+        rating: string
         ataChapter: number
         partDesignationDesc: string
         category: string
@@ -48,6 +52,9 @@ export function extractFormValues(formData: FormData): CapabilityFormValues {
   return {
     referenceNo: String(formData.get("referenceNo") ?? "").trim(),
     aircraft: String(formData.get("aircraft") ?? "").trim(),
+    aircraftModel: String(formData.get("aircraftModel") ?? "").trim(),
+    manufacturer: String(formData.get("manufacturer") ?? "").trim(),
+    rating: String(formData.get("rating") ?? "").trim(),
     ataChapter: String(formData.get("ataChapter") ?? "").trim(),
     partDesignationDesc: String(formData.get("partDesignationDesc") ?? "").trim(),
     category: String(formData.get("category") ?? "").trim(),
@@ -67,7 +74,23 @@ export function validateCapabilityFormValues(values: CapabilityFormValues): Vali
   }
 
   if (!values.aircraft) {
-    return { ok: false, error: "Aircraft is required" }
+    return { ok: false, error: "Aircraft/Engine is required" }
+  }
+
+  if (values.aircraft !== "Aircraft" && values.aircraft !== "Engine") {
+    return { ok: false, error: "Aircraft must be either Aircraft or Engine" }
+  }
+
+  if (!values.aircraftModel) {
+    return { ok: false, error: "Aircraft model is required" }
+  }
+
+  if (!values.manufacturer) {
+    return { ok: false, error: "Manufacturer is required" }
+  }
+
+  if (!values.rating) {
+    return { ok: false, error: "Rating is required" }
   }
 
   const ataChapter = Number(values.ataChapter)
@@ -117,6 +140,9 @@ export function validateCapabilityFormValues(values: CapabilityFormValues): Vali
     value: {
       referenceNo: values.referenceNo,
       aircraft: values.aircraft,
+      aircraftModel: values.aircraftModel,
+      manufacturer: values.manufacturer,
+      rating: values.rating,
       ataChapter,
       partDesignationDesc: values.partDesignationDesc,
       category: values.category,

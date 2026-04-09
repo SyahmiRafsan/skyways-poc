@@ -36,16 +36,34 @@ type CapabilityDashboardProps = {
   capabilities: Capability[]
 }
 
+type DashboardRow = {
+  id: string
+  rating: string
+  ataChapter: string
+  category: string
+  partDesignationDesc: string
+  manufacturer: string
+  aircraftModel: string
+  partNumberSeries: string
+  partNumberModelNos: string
+  maintenanceReferences: string
+  dkSgd: boolean
+  dkBll: boolean
+  myKul: boolean
+  referenceNo: string
+  aircraft: string
+}
+
 const columnConfigs = [
   { key: "rating", label: "Rating" },
-  { key: "ata", label: "ATA" },
+  { key: "ataChapter", label: "ATA" },
   { key: "category", label: "Category" },
-  { key: "designation", label: "Designation" },
+  { key: "partDesignationDesc", label: "Designation" },
   { key: "manufacturer", label: "Manufacturer" },
   { key: "aircraftModel", label: "Aircraft Model" },
-  { key: "pnSeries", label: "P/N Series" },
-  { key: "pn", label: "P/N" },
-  { key: "maintenanceReference", label: "Maintenance Reference" },
+  { key: "partNumberSeries", label: "P/N Series" },
+  { key: "partNumberModelNos", label: "P/N" },
+  { key: "maintenanceReferences", label: "Maintenance Reference" },
   { key: "dkSgd", label: "DK-SGD" },
   { key: "dkBll", label: "DK-BLL" },
   { key: "myKul", label: "MY-KUL" },
@@ -54,7 +72,27 @@ const columnConfigs = [
 
 type ColumnKey = (typeof columnConfigs)[number]["key"]
 
-function getFilterValue(item: Capability, key: ColumnKey): string {
+function mapCapabilityToRow(capability: Capability): DashboardRow {
+  return {
+    id: capability.id,
+    rating: capability.rating,
+    ataChapter: String(capability.ataChapter),
+    category: capability.category,
+    partDesignationDesc: capability.partDesignationDesc,
+    manufacturer: capability.manufacturer,
+    aircraftModel: capability.aircraftModel,
+    partNumberSeries: capability.partNumberSeries,
+    partNumberModelNos: capability.partNumberModelNos[0] ?? "",
+    maintenanceReferences: capability.maintenanceReferences.join(" | "),
+    dkSgd: capability.locations.dkSgd,
+    dkBll: capability.locations.dkBll,
+    myKul: capability.locations.myKul,
+    referenceNo: capability.referenceNo,
+    aircraft: capability.aircraft,
+  }
+}
+
+function getFilterValue(item: DashboardRow, key: ColumnKey): string {
   const value = item[key]
   if (typeof value === "boolean") {
     return value ? "Yes" : "No"
@@ -145,11 +183,13 @@ export function CapabilityDashboard({
   const [filters, setFilters] =
     useState<Record<ColumnKey, string>>(createInitialFilters)
 
+  const rows = useMemo(() => capabilities.map(mapCapabilityToRow), [capabilities])
+
   const filterOptions = useMemo(() => {
     return columnConfigs.reduce(
       (accumulator, column) => {
         const uniqueValues = Array.from(
-          new Set(capabilities.map((item) => getFilterValue(item, column.key)))
+          new Set(rows.map((item) => getFilterValue(item, column.key)))
         ).sort((a, b) => a.localeCompare(b))
 
         accumulator[column.key] = uniqueValues
@@ -157,25 +197,26 @@ export function CapabilityDashboard({
       },
       {} as Record<ColumnKey, string[]>
     )
-  }, [capabilities])
+  }, [rows])
 
-  const filteredCapabilities = useMemo(() => {
+  const filteredRows = useMemo(() => {
     const keyword = query.trim().toLowerCase()
 
-    return capabilities.filter((item) => {
+    return rows.filter((item) => {
       const matchesQuery =
         !keyword ||
         [
           item.rating,
-          item.ata,
+          item.ataChapter,
           item.category,
-          item.designation,
-          item.pn,
-          item.pnSeries,
+          item.partDesignationDesc,
           item.manufacturer,
           item.aircraftModel,
-          item.maintenanceReference,
+          item.partNumberSeries,
+          item.partNumberModelNos,
+          item.maintenanceReferences,
           item.referenceNo,
+          item.aircraft,
         ]
           .join(" ")
           .toLowerCase()
@@ -193,7 +234,7 @@ export function CapabilityDashboard({
         return getFilterValue(item, column.key) === selected
       })
     })
-  }, [capabilities, filters, query])
+  }, [filters, query, rows])
 
   return (
     <div className="space-y-8 px-4 py-8 md:px-6 md:py-10">
@@ -203,7 +244,7 @@ export function CapabilityDashboard({
             Capability List Management
           </h1>
           <p className="text-lg font-medium text-muted-foreground">
-            Total Capabilities: {filteredCapabilities.length}
+            Total Capabilities: {filteredRows.length}
           </p>
         </div>
 
@@ -226,7 +267,7 @@ export function CapabilityDashboard({
       <section className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
         {approvals.map((approval) => (
           <Card key={approval.authority} className="gap-2">
-            <CardHeader className="">
+            <CardHeader>
               <CardTitle className="text-sm font-medium">
                 {approval.authority}
               </CardTitle>
@@ -296,7 +337,7 @@ export function CapabilityDashboard({
             </TableHeader>
 
             <TableBody>
-              {filteredCapabilities.map((capability, index) => (
+              {filteredRows.map((capability, index) => (
                 <TableRow
                   key={capability.id}
                   className={index % 2 ? "bg-muted/20" : "bg-background"}
@@ -305,13 +346,13 @@ export function CapabilityDashboard({
                     {capability.rating}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.ata}
+                    {capability.ataChapter}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 font-medium">
                     {capability.category}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.designation}
+                    {capability.partDesignationDesc}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 font-medium">
                     {capability.manufacturer}
@@ -320,13 +361,13 @@ export function CapabilityDashboard({
                     {capability.aircraftModel}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.pnSeries}
+                    {capability.partNumberSeries}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.pn}
+                    {capability.partNumberModelNos}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 font-medium">
-                    {capability.maintenanceReference}
+                    {capability.maintenanceReferences}
                   </TableCell>
                   <TableCell className="border-b px-3 py-4 text-center">
                     {capability.dkSgd ? (

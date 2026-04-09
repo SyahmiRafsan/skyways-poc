@@ -56,6 +56,9 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
   const formValues = {
     referenceNo: capability.referenceNo,
     aircraft: capability.aircraft,
+    aircraftModel: capability.aircraftModel,
+    manufacturer: capability.manufacturer,
+    rating: capability.rating,
     ataChapter: String(capability.ataChapter),
     partDesignationDesc: capability.partDesignationDesc,
     category: capability.category,
