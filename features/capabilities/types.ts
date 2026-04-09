@@ -12,14 +12,24 @@ export type CapabilityStatus =
   | "TSM_REVIEW"
   | "QAM_REVIEW"
   | "WM_REVIEW"
-  | "APPROVED"
+  | "READY_FOR_SUBMISSION"
+  | "SUBMITTED_TO_AUTHORITY"
+  | "AUTHORITY_APPROVED"
+  | "AUTHORITY_REJECTED"
   | "USER_EDIT_REQUIRED"
 
 export type ReviewerRole = "tsm" | "qam" | "wm"
 
 export type ReviewDecision = "APPROVE" | "REJECT"
 
-export type CapabilityAction = "SUBMIT" | "APPROVE" | "REJECT" | "RESUBMIT"
+export type CapabilityAction =
+  | "SUBMIT"
+  | "APPROVE"
+  | "REJECT"
+  | "RESUBMIT"
+  | "MARK_SUBMITTED_TO_AUTHORITY"
+  | "MARK_AUTHORITY_APPROVED"
+  | "MARK_AUTHORITY_REJECTED"
 
 export type CapabilityLocations = {
   dkSgd: boolean

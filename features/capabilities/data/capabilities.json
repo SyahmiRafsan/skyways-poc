@@ -10,21 +10,15 @@
     "partDesignationDesc": "PROPELLER SPINNER",
     "category": "PROPELLERS",
     "partNumberSeries": "790176",
-    "partNumberModelNos": [
-      "790176-1"
-    ],
+    "partNumberModelNos": ["790176-1"],
     "locations": {
       "dkSgd": true,
       "dkBll": true,
       "myKul": true
     },
-    "maintenanceReferences": [
-      "CMM 61-13-02"
-    ],
-    "equipmentTools": [
-      "Standard propeller balancing kit"
-    ],
-    "status": "APPROVED",
+    "maintenanceReferences": ["CMM 61-13-02"],
+    "equipmentTools": ["Standard propeller balancing kit"],
+    "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
     "reviewTrail": [
@@ -58,7 +52,23 @@
         "byRole": "wm",
         "action": "APPROVE",
         "fromStatus": "WM_REVIEW",
-        "toStatus": "APPROVED"
+        "toStatus": "READY_FOR_SUBMISSION"
+      },
+      {
+        "at": "2025-01-21T05:10:00.000Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_SUBMITTED_TO_AUTHORITY",
+        "fromStatus": "READY_FOR_SUBMISSION",
+        "toStatus": "SUBMITTED_TO_AUTHORITY"
+      },
+      {
+        "at": "2025-01-22T01:05:00.000Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_AUTHORITY_APPROVED",
+        "fromStatus": "SUBMITTED_TO_AUTHORITY",
+        "toStatus": "AUTHORITY_APPROVED"
       }
     ],
     "currentReviewerRole": null
@@ -74,22 +84,15 @@
     "partDesignationDesc": "VARIABLE PITCH AIRCRAFT PROPELLER",
     "category": "PROPELLERS",
     "partNumberSeries": "792000",
-    "partNumberModelNos": [
-      "792000-X"
-    ],
+    "partNumberModelNos": ["792000-X"],
     "locations": {
       "dkSgd": true,
       "dkBll": true,
       "myKul": true
     },
-    "maintenanceReferences": [
-      "CMM 61-13-02"
-    ],
-    "equipmentTools": [
-      "Propeller fixture set",
-      "Dynamic balancing analyzer"
-    ],
-    "status": "APPROVED",
+    "maintenanceReferences": ["CMM 61-13-02"],
+    "equipmentTools": ["Propeller fixture set", "Dynamic balancing analyzer"],
+    "status": "AUTHORITY_APPROVED",
     "submittedByUserId": "U001",
     "revision": 0,
     "reviewTrail": [
@@ -123,7 +126,23 @@
         "byRole": "wm",
         "action": "APPROVE",
         "fromStatus": "WM_REVIEW",
-        "toStatus": "APPROVED"
+        "toStatus": "READY_FOR_SUBMISSION"
+      },
+      {
+        "at": "2025-01-23T04:00:00.000Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_SUBMITTED_TO_AUTHORITY",
+        "fromStatus": "READY_FOR_SUBMISSION",
+        "toStatus": "SUBMITTED_TO_AUTHORITY"
+      },
+      {
+        "at": "2025-01-23T10:20:00.000Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_AUTHORITY_APPROVED",
+        "fromStatus": "SUBMITTED_TO_AUTHORITY",
+        "toStatus": "AUTHORITY_APPROVED"
       }
     ],
     "currentReviewerRole": null
@@ -139,26 +158,20 @@
     "partDesignationDesc": "NOSE LANDING GEAR ACTUATOR",
     "category": "LANDING GEAR",
     "partNumberSeries": "D51785",
-    "partNumberModelNos": [
-      "D51785-12"
-    ],
+    "partNumberModelNos": ["D51785-12"],
     "locations": {
       "dkSgd": true,
       "dkBll": false,
       "myKul": true
     },
-    "maintenanceReferences": [
-      "CMM 32-45-11"
-    ],
-    "equipmentTools": [
-      "Hydraulic pressure test bench"
-    ],
-    "status": "APPROVED",
+    "maintenanceReferences": ["CMM 32-45-11"],
+    "equipmentTools": ["Hydraulic pressure test bench"],
+    "status": "SUBMITTED_TO_AUTHORITY",
     "submittedByUserId": "U001",
     "revision": 0,
     "reviewTrail": [
       {
-        "at": "2025-01-24T01:45:00.000Z",
+        "at": "2026-04-08T01:45:00.000Z",
         "byUserId": "U001",
         "byRole": "user",
         "action": "SUBMIT",
@@ -166,7 +179,7 @@
         "toStatus": "TSM_REVIEW"
       },
       {
-        "at": "2025-01-24T04:15:00.000Z",
+        "at": "2026-04-08T04:15:00.000Z",
         "byUserId": "T001",
         "byRole": "tsm",
         "action": "APPROVE",
@@ -174,7 +187,7 @@
         "toStatus": "QAM_REVIEW"
       },
       {
-        "at": "2025-01-24T09:10:00.000Z",
+        "at": "2026-04-08T09:10:00.000Z",
         "byUserId": "Q001",
         "byRole": "qam",
         "action": "APPROVE",
@@ -182,14 +195,22 @@
         "toStatus": "WM_REVIEW"
       },
       {
-        "at": "2025-01-25T02:20:00.000Z",
+        "at": "2026-04-09T02:20:00.000Z",
         "byUserId": "W001",
         "byRole": "wm",
         "action": "APPROVE",
         "fromStatus": "WM_REVIEW",
-        "toStatus": "APPROVED"
+        "toStatus": "READY_FOR_SUBMISSION"
+      },
+      {
+        "at": "2026-04-09T06:17:04.943Z",
+        "byUserId": "Q001",
+        "byRole": "qam",
+        "action": "MARK_SUBMITTED_TO_AUTHORITY",
+        "fromStatus": "READY_FOR_SUBMISSION",
+        "toStatus": "SUBMITTED_TO_AUTHORITY"
       }
     ],
-    "currentReviewerRole": null
+    "currentReviewerRole": "qam"
   }
 ]

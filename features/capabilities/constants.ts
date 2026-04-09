@@ -17,5 +17,10 @@ export const REVIEW_STATUS_BY_ROLE: Record<ReviewerRole, CapabilityStatus> = {
 export const NEXT_STATUS_BY_REVIEW_ROLE: Record<ReviewerRole, CapabilityStatus> = {
   tsm: "QAM_REVIEW",
   qam: "WM_REVIEW",
-  wm: "APPROVED",
+  wm: "READY_FOR_SUBMISSION",
 }
+
+export const QAM_AUTHORITY_ACTION_STATUSES: CapabilityStatus[] = [
+  "READY_FOR_SUBMISSION",
+  "SUBMITTED_TO_AUTHORITY",
+]

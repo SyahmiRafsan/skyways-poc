@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   approveCapabilityAction,
+  markAuthorityApprovedAction,
+  markAuthorityRejectedAction,
+  markSubmittedToAuthorityAction,
   rejectCapabilityAction,
   submitCapabilityAction,
   updateCapabilityAction,
@@ -14,6 +17,7 @@ import { CapabilityForm } from "@/features/capabilities/components/capability-fo
 import { CapabilityView } from "@/features/capabilities/components/capability-view"
 import { ReviewPanel } from "@/features/capabilities/components/review-panel"
 import {
+  canQamAuthorityAct,
   canReviewerAct,
   canUserEditCapability,
   findCapabilityById,
@@ -56,6 +60,9 @@ function getActionLabel(action: string): string {
   if (action === "RESUBMIT") return "Resubmitted by"
   if (action === "APPROVE") return "Approved by"
   if (action === "REJECT") return "Rejected by"
+  if (action === "MARK_SUBMITTED_TO_AUTHORITY") return "Marked submitted by"
+  if (action === "MARK_AUTHORITY_APPROVED") return "Authority approved by"
+  if (action === "MARK_AUTHORITY_REJECTED") return "Authority rejected by"
   return "Updated by"
 }
 
@@ -63,8 +70,11 @@ function formatStatusLabel(status: string): string {
   if (status === "TSM_REVIEW") return "TSM Review"
   if (status === "QAM_REVIEW") return "QAM Review"
   if (status === "WM_REVIEW") return "WM Review"
+  if (status === "READY_FOR_SUBMISSION") return "Ready for Submission"
+  if (status === "SUBMITTED_TO_AUTHORITY") return "Submitted to Authority"
+  if (status === "AUTHORITY_APPROVED") return "Authority Approved"
+  if (status === "AUTHORITY_REJECTED") return "Authority Rejected"
   if (status === "USER_EDIT_REQUIRED") return "User Edit Required"
-  if (status === "APPROVED") return "Approved"
   if (status === "DRAFT") return "Draft"
   return status
 }
@@ -114,15 +124,37 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
   }
 
   const canEdit = canUserEditCapability(capability, session.id, session.role)
-  const canReview = canReviewerAct(capability, session.role)
+  const canReview =
+    canReviewerAct(capability, session.role) ||
+    canQamAuthorityAct(capability, session.role)
   const userIdToName = new Map(
     usersData.map((user) => [user.id, user.name] as const)
   )
+  const roleToUser = new Map(usersData.map((user) => [user.role, user] as const))
 
   const boundUpdateAction = updateCapabilityAction.bind(null, capability.id)
   const boundSubmitAction = submitCapabilityAction.bind(null, capability.id)
   const boundApproveAction = approveCapabilityAction.bind(null, capability.id)
   const boundRejectAction = rejectCapabilityAction.bind(null, capability.id)
+  const boundMarkSubmittedAction = markSubmittedToAuthorityAction.bind(
+    null,
+    capability.id
+  )
+  const boundMarkAuthorityApprovedAction = markAuthorityApprovedAction.bind(
+    null,
+    capability.id
+  )
+  const boundMarkAuthorityRejectedAction = markAuthorityRejectedAction.bind(
+    null,
+    capability.id
+  )
+
+  const reviewPanelMode =
+    capability.status === "READY_FOR_SUBMISSION"
+      ? "authority_ready"
+      : capability.status === "SUBMITTED_TO_AUTHORITY"
+        ? "authority_submitted"
+        : "internal"
 
   return (
     <main className="space-y-4 p-6">
@@ -141,10 +173,16 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
             <span className="font-medium">Revision:</span> R
             {capability.revision}
           </p>
-          {capability.status !== "APPROVED" ? (
+          {capability.status !== "AUTHORITY_APPROVED" ? (
             <p>
               <span className="font-medium">Current Reviewer:</span>{" "}
-              {capability.currentReviewerRole ?? "-"}
+              {capability.currentReviewerRole
+                ? (() => {
+                    const reviewer = roleToUser.get(capability.currentReviewerRole)
+                    if (!reviewer) return capability.currentReviewerRole
+                    return `${reviewer.name} (${reviewer.id})`
+                  })()
+                : "-"}
             </p>
           ) : null}
           <p>
@@ -170,8 +208,12 @@ export default async function CapabilityDetailPage({ params }: PageProps) {
 
       {canReview ? (
         <ReviewPanel
+          mode={reviewPanelMode}
           approveAction={boundApproveAction}
           rejectAction={boundRejectAction}
+          markSubmittedAction={boundMarkSubmittedAction}
+          markAuthorityApprovedAction={boundMarkAuthorityApprovedAction}
+          markAuthorityRejectedAction={boundMarkAuthorityRejectedAction}
         />
       ) : null}
 

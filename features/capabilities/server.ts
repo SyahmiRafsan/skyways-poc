@@ -4,6 +4,7 @@ import path from "node:path"
 import {
   CAPABILITY_DATA_FILE,
   NEXT_STATUS_BY_REVIEW_ROLE,
+  QAM_AUTHORITY_ACTION_STATUSES,
   REVIEW_STATUS_BY_ROLE,
 } from "@/features/capabilities/constants"
 import type { Role } from "@/features/auth/types"
@@ -198,7 +199,22 @@ export function canReviewerAct(capability: Capability, role: Role): role is Revi
     return false
   }
 
-  return capability.currentReviewerRole === role
+  return (
+    capability.currentReviewerRole === role &&
+    capability.status === REVIEW_STATUS_BY_ROLE[role]
+  )
+}
+
+export function canQamAuthorityAct(capability: Capability, role: Role): boolean {
+  if (role !== "qam") {
+    return false
+  }
+
+  if (capability.currentReviewerRole !== "qam") {
+    return false
+  }
+
+  return QAM_AUTHORITY_ACTION_STATUSES.includes(capability.status)
 }
 
 export function generateReferenceNo(capabilities: Capability[], now: Date = new Date()): string {

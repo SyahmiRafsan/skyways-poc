@@ -12,22 +12,129 @@ type ReviewAction = (
   formData: FormData
 ) => Promise<CapabilityActionState>
 
+type ReviewPanelMode = "internal" | "authority_ready" | "authority_submitted"
+
 type ReviewPanelProps = {
-  approveAction: ReviewAction
-  rejectAction: ReviewAction
+  mode: ReviewPanelMode
+  approveAction?: ReviewAction
+  rejectAction?: ReviewAction
+  markSubmittedAction?: ReviewAction
+  markAuthorityApprovedAction?: ReviewAction
+  markAuthorityRejectedAction?: ReviewAction
 }
 
 const INITIAL_STATE: CapabilityActionState = { ok: false, error: null }
 
-export function ReviewPanel({ approveAction, rejectAction }: ReviewPanelProps) {
+export function ReviewPanel({
+  mode,
+  approveAction,
+  rejectAction,
+  markSubmittedAction,
+  markAuthorityApprovedAction,
+  markAuthorityRejectedAction,
+}: ReviewPanelProps) {
   const [approveState, approveFormAction, isApproving] = useActionState(
-    approveAction,
+    approveAction ?? (async () => ({ ok: false, error: "Approve not available" })),
     INITIAL_STATE
   )
   const [rejectState, rejectFormAction, isRejecting] = useActionState(
-    rejectAction,
+    rejectAction ?? (async () => ({ ok: false, error: "Reject not available" })),
     INITIAL_STATE
   )
+
+  const [markSubmittedState, markSubmittedFormAction, isMarkingSubmitted] =
+    useActionState(
+      markSubmittedAction ??
+        (async () => ({ ok: false, error: "Submit-to-authority not available" })),
+      INITIAL_STATE
+    )
+
+  const [markAuthorityApprovedState, markAuthorityApprovedFormAction, isMarkingAuthorityApproved] =
+    useActionState(
+      markAuthorityApprovedAction ??
+        (async () => ({ ok: false, error: "Authority-approved action not available" })),
+      INITIAL_STATE
+    )
+
+  const [markAuthorityRejectedState, markAuthorityRejectedFormAction, isMarkingAuthorityRejected] =
+    useActionState(
+      markAuthorityRejectedAction ??
+        (async () => ({ ok: false, error: "Authority-rejected action not available" })),
+      INITIAL_STATE
+    )
+
+  if (mode === "authority_ready") {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Authority Submission Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <form action={markSubmittedFormAction}>
+            <Button type="submit" disabled={isMarkingSubmitted}>
+              {isMarkingSubmitted
+                ? "Marking Submitted..."
+                : "Mark Submitted to Authority"}
+            </Button>
+          </form>
+          {markSubmittedState.error ? (
+            <p className="text-sm text-destructive">{markSubmittedState.error}</p>
+          ) : null}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (mode === "authority_submitted") {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Authority Submission Actions</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-2">
+          <form action={markAuthorityApprovedFormAction} className="space-y-3">
+            {markAuthorityApprovedState.error ? (
+              <p className="text-sm text-destructive">
+                {markAuthorityApprovedState.error}
+              </p>
+            ) : null}
+            <Button type="submit" disabled={isMarkingAuthorityApproved}>
+              {isMarkingAuthorityApproved
+                ? "Marking Authority Approved..."
+                : "Mark Authority Approved"}
+            </Button>
+          </form>
+
+          <form action={markAuthorityRejectedFormAction} className="space-y-3">
+            <label className="flex flex-col gap-1">
+              <span className="text-sm font-medium">
+                Authority Reject Remarks (required)
+              </span>
+              <Textarea
+                name="remarks"
+                placeholder="Provide authority rejection reason"
+                required
+              />
+            </label>
+            {markAuthorityRejectedState.error ? (
+              <p className="text-sm text-destructive">
+                {markAuthorityRejectedState.error}
+              </p>
+            ) : null}
+            <Button
+              type="submit"
+              variant="destructive"
+              disabled={isMarkingAuthorityRejected}
+            >
+              {isMarkingAuthorityRejected
+                ? "Marking Authority Rejected..."
+                : "Mark Authority Rejected"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card>
@@ -36,7 +143,7 @@ export function ReviewPanel({ approveAction, rejectAction }: ReviewPanelProps) {
       </CardHeader>
       <CardContent className="grid gap-4 md:grid-cols-2">
         <form action={approveFormAction} className="space-y-3">
-          <label className="space-y-1">
+          <label className="flex flex-col gap-1">
             <span className="text-sm font-medium">Approve Remarks (optional)</span>
             <Textarea name="remarks" placeholder="Optional note" />
           </label>
@@ -49,7 +156,7 @@ export function ReviewPanel({ approveAction, rejectAction }: ReviewPanelProps) {
         </form>
 
         <form action={rejectFormAction} className="space-y-3">
-          <label className="space-y-1">
+          <label className="flex flex-col gap-1">
             <span className="text-sm font-medium">Reject Remarks (required)</span>
             <Textarea name="remarks" placeholder="Provide rejection reason" required />
           </label>

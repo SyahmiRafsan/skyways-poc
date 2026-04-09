@@ -8,6 +8,7 @@ import { redirect } from "next/navigation"
 import { getSessionFromCookieStore } from "@/features/auth/session"
 import {
   appendReviewEvent,
+  canQamAuthorityAct,
   canReviewerAct,
   canUserEditCapability,
   extractFormValues,
@@ -261,6 +262,8 @@ export async function approveCapabilityAction(
         ? "qam"
         : toStatus === "WM_REVIEW"
           ? "wm"
+          : toStatus === "READY_FOR_SUBMISSION"
+            ? "qam"
           : null,
   }
 
@@ -271,6 +274,160 @@ export async function approveCapabilityAction(
     fromStatus: current.status,
     toStatus,
     ...(remarks ? { remarks } : {}),
+  })
+
+  capabilities[index] = next
+  await writeCapabilities(capabilities)
+  revalidateCapabilityRoutes(id)
+  redirect(`/capabilities/${id}`)
+}
+
+export async function markSubmittedToAuthorityAction(
+  id: string,
+  _previousState: CapabilityActionState,
+  formData: FormData
+): Promise<CapabilityActionState> {
+  void formData
+
+  const session = await getSessionFromCookieStore()
+  if (!session) {
+    return { ok: false, error: "Unauthorized" }
+  }
+
+  const capabilities = await readCapabilities()
+  const index = capabilities.findIndex((item) => item.id === id)
+  if (index === -1) {
+    return { ok: false, error: "PN Form not found" }
+  }
+
+  const current = capabilities[index]
+  if (!canQamAuthorityAct(current, session.role)) {
+    return { ok: false, error: "You cannot mark this PN Form as submitted to authority" }
+  }
+
+  if (current.status !== "READY_FOR_SUBMISSION") {
+    return { ok: false, error: "PN Form is not ready for submission" }
+  }
+
+  let next: Capability = {
+    ...current,
+    status: "SUBMITTED_TO_AUTHORITY",
+    currentReviewerRole: "qam",
+  }
+
+  next = appendReviewEvent(next, {
+    byUserId: session.id,
+    byRole: session.role,
+    action: "MARK_SUBMITTED_TO_AUTHORITY",
+    fromStatus: current.status,
+    toStatus: "SUBMITTED_TO_AUTHORITY",
+  })
+
+  capabilities[index] = next
+  await writeCapabilities(capabilities)
+  revalidateCapabilityRoutes(id)
+  redirect(`/capabilities/${id}`)
+}
+
+export async function markAuthorityApprovedAction(
+  id: string,
+  _previousState: CapabilityActionState,
+  formData: FormData
+): Promise<CapabilityActionState> {
+  void formData
+
+  const session = await getSessionFromCookieStore()
+  if (!session) {
+    return { ok: false, error: "Unauthorized" }
+  }
+
+  const capabilities = await readCapabilities()
+  const index = capabilities.findIndex((item) => item.id === id)
+  if (index === -1) {
+    return { ok: false, error: "PN Form not found" }
+  }
+
+  const current = capabilities[index]
+  if (!canQamAuthorityAct(current, session.role)) {
+    return { ok: false, error: "You cannot mark this PN Form as authority approved" }
+  }
+
+  if (current.status !== "SUBMITTED_TO_AUTHORITY") {
+    return { ok: false, error: "PN Form must be submitted to authority first" }
+  }
+
+  let next: Capability = {
+    ...current,
+    status: "AUTHORITY_APPROVED",
+    currentReviewerRole: null,
+  }
+
+  next = appendReviewEvent(next, {
+    byUserId: session.id,
+    byRole: session.role,
+    action: "MARK_AUTHORITY_APPROVED",
+    fromStatus: current.status,
+    toStatus: "AUTHORITY_APPROVED",
+  })
+
+  capabilities[index] = next
+  await writeCapabilities(capabilities)
+  revalidateCapabilityRoutes(id)
+  redirect(`/capabilities/${id}`)
+}
+
+export async function markAuthorityRejectedAction(
+  id: string,
+  _previousState: CapabilityActionState,
+  formData: FormData
+): Promise<CapabilityActionState> {
+  const session = await getSessionFromCookieStore()
+  if (!session) {
+    return { ok: false, error: "Unauthorized" }
+  }
+
+  const capabilities = await readCapabilities()
+  const index = capabilities.findIndex((item) => item.id === id)
+  if (index === -1) {
+    return { ok: false, error: "PN Form not found" }
+  }
+
+  const current = capabilities[index]
+  if (!canQamAuthorityAct(current, session.role)) {
+    return { ok: false, error: "You cannot mark this PN Form as authority rejected" }
+  }
+
+  if (current.status !== "SUBMITTED_TO_AUTHORITY") {
+    return { ok: false, error: "PN Form must be submitted to authority first" }
+  }
+
+  const remarks = String(formData.get("remarks") ?? "").trim()
+  if (!remarks) {
+    return { ok: false, error: "Remarks are required for authority reject" }
+  }
+
+  let next = appendReviewEvent(current, {
+    byUserId: session.id,
+    byRole: session.role,
+    action: "MARK_AUTHORITY_REJECTED",
+    fromStatus: current.status,
+    toStatus: "AUTHORITY_REJECTED",
+    remarks,
+  })
+
+  next = {
+    ...next,
+    status: "USER_EDIT_REQUIRED",
+    currentReviewerRole: null,
+  }
+
+  next = appendReviewEvent(next, {
+    byUserId: session.id,
+    byRole: session.role,
+    action: "REJECT",
+    fromStatus: "AUTHORITY_REJECTED",
+    toStatus: "USER_EDIT_REQUIRED",
+    remarks,
   })
 
   capabilities[index] = next
