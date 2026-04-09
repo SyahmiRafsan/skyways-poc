@@ -61,10 +61,10 @@ type DashboardRow = {
   category: string
   partDesignationDesc: string
   manufacturer: string
-  aircraftModel: string
+  aircraftModel: string[]
   partNumberSeries: string
-  partNumberModelNos: string
-  maintenanceReferences: string
+  partNumberModelNos: string[]
+  maintenanceReferences: string[]
   dkSgd: boolean
   dkBll: boolean
   myKul: boolean
@@ -98,10 +98,10 @@ function mapCapabilityToRow(capability: Capability): DashboardRow {
     category: capability.category,
     partDesignationDesc: capability.partDesignationDesc,
     manufacturer: capability.manufacturer,
-    aircraftModel: capability.aircraftModels.join(" | "),
+    aircraftModel: capability.aircraftModels,
     partNumberSeries: capability.partNumberSeries,
-    partNumberModelNos: capability.partNumberModelNos[0] ?? "",
-    maintenanceReferences: capability.maintenanceReferences.join(" | "),
+    partNumberModelNos: capability.partNumberModelNos,
+    maintenanceReferences: capability.maintenanceReferences,
     dkSgd: capability.locations.dkSgd,
     dkBll: capability.locations.dkBll,
     myKul: capability.locations.myKul,
@@ -114,6 +114,9 @@ function getFilterValue(item: DashboardRow, key: ColumnKey): string {
   const value = item[key]
   if (typeof value === "boolean") {
     return value ? "Yes" : "No"
+  }
+  if (Array.isArray(value)) {
+    return value.join(" | ")
   }
   return String(value)
 }
@@ -286,10 +289,10 @@ export function CapabilityDashboard({
           item.category,
           item.partDesignationDesc,
           item.manufacturer,
-          item.aircraftModel,
+          item.aircraftModel.join(" "),
           item.partNumberSeries,
-          item.partNumberModelNos,
-          item.maintenanceReferences,
+          item.partNumberModelNos.join(" "),
+          item.maintenanceReferences.join(" "),
           item.referenceNo,
           item.aircraft,
         ]
@@ -561,9 +564,9 @@ export function CapabilityDashboard({
                   <TableCell className="border-b p-0">
                     <Link
                       href={`/capabilities/${capability.id}`}
-                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                      className="block px-3 py-4 font-medium whitespace-pre hover:bg-muted/40"
                     >
-                      {capability.aircraftModel}
+                      {capability.aircraftModel.join("\n") || "-"}
                     </Link>
                   </TableCell>
                   <TableCell className="border-b p-0">
@@ -577,17 +580,17 @@ export function CapabilityDashboard({
                   <TableCell className="border-b p-0">
                     <Link
                       href={`/capabilities/${capability.id}`}
-                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                      className="block px-3 py-4 font-medium whitespace-pre hover:bg-muted/40"
                     >
-                      {capability.partNumberModelNos}
+                      {capability.partNumberModelNos.join("\n") || "-"}
                     </Link>
                   </TableCell>
                   <TableCell className="border-b p-0">
                     <Link
                       href={`/capabilities/${capability.id}`}
-                      className="block px-3 py-4 font-medium hover:bg-muted/40"
+                      className="block px-3 py-4 font-medium whitespace-pre hover:bg-muted/40"
                     >
-                      {capability.maintenanceReferences}
+                      {capability.maintenanceReferences.join("\n") || "-"}
                     </Link>
                   </TableCell>
                   <TableCell className="border-b p-0 text-center">
