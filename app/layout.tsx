@@ -53,7 +53,7 @@ export default async function RootLayout({
             {session ? (
               <header className="flex items-center justify-between px-6 py-3">
                 <div className="flex items-center bg-[#051f44] p-3">
-                  <Image
+                  <img
                     src="/logo-skyways.webp"
                     alt="Skyways"
                     width={112}
@@ -62,7 +62,7 @@ export default async function RootLayout({
                   />
                 </div>
                 <details className="group relative">
-                  <summary className="flex list-none cursor-pointer items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden">
+                  <summary className="flex cursor-pointer list-none items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted [&::-webkit-details-marker]:hidden">
                     <Avatar className="size-8">
                       <AvatarImage
                         src={avatarSrc ?? undefined}
@@ -87,7 +87,10 @@ export default async function RootLayout({
                         type="submit"
                         className="inline-flex h-9 w-full items-center justify-start gap-2 rounded-md px-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
                       >
-                        <IconLogout size={16} className="text-muted-foreground" />
+                        <IconLogout
+                          size={16}
+                          className="text-muted-foreground"
+                        />
                         Logout
                       </button>
                     </form>
