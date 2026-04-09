@@ -59,7 +59,11 @@ export function CapabilityView({ capability }: CapabilityViewProps) {
 
           <div>
             <p className="mb-1 font-medium">Aircraft Model</p>
-            <p className="text-muted-foreground">{capability.aircraftModel}</p>
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
+              {capability.aircraftModels.map((line, index) => (
+                <li key={`${line}-${index}`}>{line}</li>
+              ))}
+            </ul>
           </div>
 
           <div className="md:col-span-2">

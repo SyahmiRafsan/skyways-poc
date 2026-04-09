@@ -57,7 +57,9 @@ const capabilityFormSchema = z
       .refine((value): boolean => value !== "", {
         message: "Aircraft/Engine is required",
       }),
-    aircraftModel: z.string().trim().min(1, "Aircraft model is required"),
+    aircraftModels: z
+      .array(multilineLineSchema)
+      .min(1, "Aircraft model is required"),
     manufacturer: z.string().trim().min(1, "Manufacturer is required"),
     rating: z.string().trim().min(1, "Rating is required"),
     ataChapter: z
@@ -118,7 +120,7 @@ function toDefaultValues(values: CapabilityFormValues): CapabilityFormInput {
       values.aircraft === "Aircraft" || values.aircraft === "Engine"
         ? values.aircraft
         : "",
-    aircraftModel: values.aircraftModel,
+    aircraftModels: parseMultilineValue(values.aircraftModels),
     manufacturer: values.manufacturer,
     rating: values.rating,
     ataChapter: values.ataChapter,
@@ -146,7 +148,7 @@ function toFormData(values: CapabilityFormInput): FormData {
 
   formData.set("referenceNo", values.referenceNo.trim())
   formData.set("aircraft", values.aircraft)
-  formData.set("aircraftModel", values.aircraftModel.trim())
+  formData.set("aircraftModels", toMultilinePayload(values.aircraftModels))
   formData.set("manufacturer", values.manufacturer.trim())
   formData.set("rating", values.rating.trim())
   formData.set("ataChapter", values.ataChapter.trim())
@@ -196,6 +198,10 @@ export function CapabilityForm({
     control: form.control,
     name: "partNumberModelNos",
   })
+  const aircraftModels = useFieldArray({
+    control: form.control,
+    name: "aircraftModels",
+  })
 
   const maintenanceReferences = useFieldArray({
     control: form.control,
@@ -212,6 +218,9 @@ export function CapabilityForm({
     form.formState.errors.locationDkBll ??
     form.formState.errors.locationMyKul
   const aircraftError = form.formState.errors.aircraft
+  const aircraftModelsError = form.formState.errors.aircraftModels as
+    | { message?: string }
+    | undefined
   const partNumberModelNosError = form.formState.errors.partNumberModelNos as
     | { message?: string }
     | undefined
@@ -427,17 +436,6 @@ export function CapabilityForm({
               <FieldError errors={[form.formState.errors.manufacturer]} />
             </Field>
 
-            <Field data-invalid={!!form.formState.errors.aircraftModel}>
-              <FieldLabel htmlFor="aircraftModel">Aircraft Model</FieldLabel>
-              <Input
-                id="aircraftModel"
-                {...form.register("aircraftModel")}
-                readOnly={readOnly}
-                disabled={readOnly}
-              />
-              <FieldError errors={[form.formState.errors.aircraftModel]} />
-            </Field>
-
             <Field
               className="md:col-span-2"
               data-invalid={!!form.formState.errors.partNumberSeries}
@@ -454,6 +452,65 @@ export function CapabilityForm({
               <FieldError errors={[form.formState.errors.partNumberSeries]} />
             </Field>
           </FieldGroup>
+
+          <FieldSet>
+            <FieldLegend
+              variant="label"
+              className={aircraftModelsError ? "text-destructive" : ""}
+            >
+              Aircraft Model (one line each)
+            </FieldLegend>
+            <FieldGroup>
+              {aircraftModels.fields.map((item, index) => (
+                <Field
+                  key={item.id}
+                  data-invalid={
+                    !!form.formState.errors.aircraftModels?.[index]?.value
+                  }
+                >
+                  <div className="flex items-center gap-2">
+                    <Input
+                      {...form.register(`aircraftModels.${index}.value` as const)}
+                      readOnly={readOnly}
+                      disabled={readOnly}
+                      placeholder={`Aircraft model ${index + 1}`}
+                    />
+                    {!readOnly ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon-sm"
+                        onClick={() => {
+                          if (aircraftModels.fields.length === 1) {
+                            form.setValue("aircraftModels.0.value", "")
+                            return
+                          }
+                          aircraftModels.remove(index)
+                        }}
+                      >
+                        <IconTrash size={16} />
+                      </Button>
+                    ) : null}
+                  </div>
+                  <FieldError
+                    errors={[form.formState.errors.aircraftModels?.[index]?.value]}
+                  />
+                </Field>
+              ))}
+            </FieldGroup>
+            {!readOnly ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => aircraftModels.append({ value: "" })}
+              >
+                <IconPlus size={16} />
+                Add line
+              </Button>
+            ) : null}
+            <FieldError errors={[aircraftModelsError]} />
+          </FieldSet>
 
           <FieldSet>
             <FieldLegend

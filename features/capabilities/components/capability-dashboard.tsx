@@ -87,7 +87,7 @@ function mapCapabilityToRow(capability: Capability): DashboardRow {
     category: capability.category,
     partDesignationDesc: capability.partDesignationDesc,
     manufacturer: capability.manufacturer,
-    aircraftModel: capability.aircraftModel,
+    aircraftModel: capability.aircraftModels.join(" | "),
     partNumberSeries: capability.partNumberSeries,
     partNumberModelNos: capability.partNumberModelNos[0] ?? "",
     maintenanceReferences: capability.maintenanceReferences.join(" | "),

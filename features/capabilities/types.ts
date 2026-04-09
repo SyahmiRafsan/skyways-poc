@@ -53,7 +53,7 @@ export type Capability = {
   id: string
   referenceNo: string
   aircraft: CapabilityAircraftType
-  aircraftModel: string
+  aircraftModels: string[]
   manufacturer: string
   rating: string
   ataChapter: number
@@ -74,7 +74,7 @@ export type Capability = {
 export type CapabilityFormValues = {
   referenceNo: string
   aircraft: string
-  aircraftModel: string
+  aircraftModels: string
   manufacturer: string
   rating: string
   ataChapter: string

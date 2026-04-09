@@ -37,7 +37,7 @@ function validateStoredCapability(capability: Capability): string | null {
   if (capability.aircraft !== "Aircraft" && capability.aircraft !== "Engine") {
     return "Aircraft must be either Aircraft or Engine"
   }
-  if (!capability.aircraftModel.trim()) return "Aircraft model is required"
+  if (capability.aircraftModels.length === 0) return "Aircraft model is required"
   if (!capability.manufacturer.trim()) return "Manufacturer is required"
   if (!capability.rating.trim()) return "Rating is required"
   if (!Number.isInteger(capability.ataChapter) || capability.ataChapter < 1 || capability.ataChapter > 100) {
@@ -84,7 +84,7 @@ export async function createCapabilityAction(
     id: randomUUID(),
     referenceNo: validated.value.referenceNo,
     aircraft: validated.value.aircraft,
-    aircraftModel: validated.value.aircraftModel,
+    aircraftModels: validated.value.aircraftModels,
     manufacturer: validated.value.manufacturer,
     rating: validated.value.rating,
     ataChapter: validated.value.ataChapter,
@@ -154,7 +154,7 @@ export async function updateCapabilityAction(
     ...current,
     referenceNo: nextReferenceNo,
     aircraft: validated.value.aircraft,
-    aircraftModel: validated.value.aircraftModel,
+    aircraftModels: validated.value.aircraftModels,
     manufacturer: validated.value.manufacturer,
     rating: validated.value.rating,
     ataChapter: validated.value.ataChapter,

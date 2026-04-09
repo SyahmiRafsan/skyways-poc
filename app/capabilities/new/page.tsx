@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 const EMPTY_VALUES: CapabilityFormValues = {
   referenceNo: "",
   aircraft: "",
-  aircraftModel: "",
+  aircraftModels: "",
   manufacturer: "",
   rating: "",
   ataChapter: "",

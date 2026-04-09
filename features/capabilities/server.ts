@@ -27,7 +27,7 @@ type ValidationResult =
       value: {
         referenceNo: string
         aircraft: CapabilityAircraftType
-        aircraftModel: string
+        aircraftModels: string[]
         manufacturer: string
         rating: string
         ataChapter: number
@@ -53,7 +53,7 @@ export function extractFormValues(formData: FormData): CapabilityFormValues {
   return {
     referenceNo: String(formData.get("referenceNo") ?? "").trim(),
     aircraft: String(formData.get("aircraft") ?? "").trim(),
-    aircraftModel: String(formData.get("aircraftModel") ?? "").trim(),
+    aircraftModels: String(formData.get("aircraftModels") ?? "").trim(),
     manufacturer: String(formData.get("manufacturer") ?? "").trim(),
     rating: String(formData.get("rating") ?? "").trim(),
     ataChapter: String(formData.get("ataChapter") ?? "").trim(),
@@ -82,7 +82,8 @@ export function validateCapabilityFormValues(values: CapabilityFormValues): Vali
     return { ok: false, error: "Aircraft must be either Aircraft or Engine" }
   }
 
-  if (!values.aircraftModel) {
+  const aircraftModels = splitMultilineLines(values.aircraftModels)
+  if (aircraftModels.length === 0) {
     return { ok: false, error: "Aircraft model is required" }
   }
 
@@ -141,7 +142,7 @@ export function validateCapabilityFormValues(values: CapabilityFormValues): Vali
     value: {
       referenceNo: values.referenceNo,
       aircraft: values.aircraft,
-      aircraftModel: values.aircraftModel,
+      aircraftModels,
       manufacturer: values.manufacturer,
       rating: values.rating,
       ataChapter,
